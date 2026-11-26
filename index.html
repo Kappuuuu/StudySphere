@@ -7,6 +7,7 @@
 <meta name="theme-color" content="#101323">
 <title>StudySphere | Learn Without Limits</title>
 <link rel="manifest" href="manifest.json">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{--bg:#0b1020;--panel:#171e33;--panel2:#222d49;--text:#f5f6ff;--muted:#aab4ce;--accent:#8b7cff;--green:#43d6a0}
 *{box-sizing:border-box}
@@ -25,6 +26,7 @@ p{line-height:1.6}
 button{border:0;border-radius:11px;padding:12px 15px;background:var(--accent);color:white;font-weight:bold;cursor:pointer}
 button.secondary{background:var(--panel2);border:1px solid #394767}
 button:disabled{opacity:.5}
+input{font:inherit}
 nav{display:flex;gap:8px;overflow:auto;padding:12px 0}
 nav button{white-space:nowrap}
 .actions{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
@@ -39,178 +41,289 @@ nav button{white-space:nowrap}
 .progress{height:7px;background:#303a55;border-radius:9px;overflow:hidden}
 .progress div{height:100%;background:var(--green);width:0}
 footer{text-align:center;color:var(--muted);padding:28px;font-size:12px}
+.auth-wrap{max-width:440px;margin:35px auto;padding:18px}
+.auth-card{background:var(--panel);border:1px solid #394767;border-radius:20px;padding:22px}
+.auth-input{display:block;width:100%;padding:14px;margin:12px 0;background:#0b1020;border:1px solid #394767;border-radius:11px;color:white}
+.auth-card button{width:100%;margin:7px 0}
+.auth-message{font-size:13px;line-height:1.5;color:var(--green);min-height:20px}
+.auth-switch{color:#b9adff;text-decoration:underline;cursor:pointer}
+.userbar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;background:var(--panel);padding:12px;border-radius:13px}
 @media(max-width:420px){main{padding:13px}.card{padding:12px}.grid{gap:8px}}
 </style>
 </head>
 <body>
+
 <header>
  <div class="brand">Study<span>Sphere</span> ✦</div>
  <p>Learn Without Limits • Sindh Board • Class 9–12</p>
 </header>
 
-<main>
- <nav>
-  <button onclick="home()">Home</button>
-  <button class="secondary" onclick="savedPage()">Saved Offline</button>
-  <button class="secondary" onclick="englishPage()">English Academy</button>
- </nav>
- <div class="muted" id="network">Checking connection...</div>
+<!-- AUTHENTICATION -->
+<section id="authScreen" class="auth-wrap">
+ <div class="auth-card">
+  <div class="brand">Study<span>Sphere</span> ✦</div>
+  <h2 id="authTitle">Welcome Back!</h2>
+  <p class="muted" id="authDescription">Login to continue your learning journey.</p>
 
- <section id="home">
-  <h2>Welcome to StudySphere 👋</h2>
-  <p class="muted">Choose your class and explore your subjects.</p>
-  <div class="grid" id="grades"></div>
-  <h2>English Academy</h2>
-  <div class="card">
-   <h3>English: Beginner to Advanced</h3>
-   <p>Grammar • Vocabulary • Reading • Writing • Listening • Speaking</p>
-   <button onclick="englishPage()">Start English</button>
+  <form id="authForm">
+   <input class="auth-input" id="authName" placeholder="Your full name" autocomplete="name" style="display:none">
+   <input class="auth-input" id="authEmail" type="email" placeholder="Gmail address" autocomplete="email" required>
+   <input class="auth-input" id="authPassword" type="password" placeholder="Password (minimum 6 characters)" autocomplete="current-password" required>
+   <button id="authSubmit" type="submit">Login</button>
+  </form>
+
+  <button class="secondary" id="forgotBtn" type="button" onclick="forgotPassword()">Forgot Password?</button>
+  <p class="muted" style="text-align:center" id="switchText">
+   New student? <span class="auth-switch" onclick="setAuthMode('signup')">Create Account</span>
+  </p>
+  <p class="auth-message" id="authMessage"></p>
+ </div>
+</section>
+
+<!-- MAIN APP -->
+<div id="app" class="hidden">
+ <main>
+  <div class="userbar">
+   <div>
+    <strong>Student Account</strong>
+    <div class="muted" id="studentEmail"></div>
+   </div>
+   <button class="secondary" onclick="logout()">Logout</button>
   </div>
-  <h2>Your Learning Progress</h2>
-  <div class="card">
-   <strong id="progressCount">0 lessons saved</strong>
-   <p class="muted">Saved lessons remain available on this device.</p>
-   <div class="progress"><div id="progressBar"></div></div>
-  </div>
- </section>
 
- <section id="subjects" class="hidden">
-  <button class="secondary" onclick="home()">← Home</button>
-  <h2 id="subjectHeading"></h2>
-  <div class="grid" id="subjectGrid"></div>
- </section>
+  <nav>
+   <button onclick="home()">Home</button>
+   <button class="secondary" onclick="savedPage()">Saved Offline</button>
+   <button class="secondary" onclick="englishPage()">English Academy</button>
+  </nav>
+  <div class="muted" id="network">Checking connection...</div>
 
- <section id="chapters" class="hidden">
-  <button class="secondary" onclick="backSubjects()">← Subjects</button>
-  <h2 id="chapterHeading"></h2>
-  <input class="search" id="chapterSearch" placeholder="Search chapters..." oninput="filterChapters()">
-  <div id="chapterList"></div>
- </section>
+  <section id="home">
+   <h2>Welcome to StudySphere 👋</h2>
+   <p class="muted">Choose your class and explore your subjects.</p>
+   <div class="grid" id="grades"></div>
+   <h2>English Academy</h2>
+   <div class="card">
+    <h3>English: Beginner to Advanced</h3>
+    <p>Grammar • Vocabulary • Reading • Writing • Listening • Speaking</p>
+    <button onclick="englishPage()">Start English</button>
+   </div>
+   <h2>Your Learning Progress</h2>
+   <div class="card">
+    <strong id="progressCount">0 lessons saved</strong>
+    <p class="muted">Saved lessons remain available on this device.</p>
+    <div class="progress"><div id="progressBar"></div></div>
+   </div>
+  </section>
 
- <section id="reader" class="hidden">
-  <div class="actions">
-   <button class="secondary" onclick="backChapters()">← Chapters</button>
-   <button onclick="saveCurrent()">Save Offline ↓</button>
-  </div>
-  <div class="card">
-   <div class="tag" id="lessonTag">STUDYSPHERE LESSON</div>
-   <h2 id="lessonTitle"></h2>
-   <div id="lessonBody" class="lesson"></div>
-   <p class="muted" id="lessonStatus"></p>
-  </div>
- </section>
+  <section id="subjects" class="hidden">
+   <button class="secondary" onclick="home()">← Home</button>
+   <h2 id="subjectHeading"></h2>
+   <div class="grid" id="subjectGrid"></div>
+  </section>
 
- <section id="saved" class="hidden">
-  <h2>Saved for Offline</h2>
-  <p class="muted">These lessons are stored on this phone.</p>
-  <div id="savedList"></div>
- </section>
+  <section id="chapters" class="hidden">
+   <button class="secondary" onclick="backSubjects()">← Subjects</button>
+   <h2 id="chapterHeading"></h2>
+   <input class="search" id="chapterSearch" placeholder="Search chapters..." oninput="filterChapters()">
+   <div id="chapterList"></div>
+  </section>
 
- <section id="english" class="hidden">
-  <button class="secondary" onclick="home()">← Home</button>
-  <h2>English Academy</h2>
-  <p class="muted">Start from the foundation and move towards advanced English.</p>
-  <div id="englishList"></div>
- </section>
-</main>
-<footer>StudySphere • Keep learning, keep growing.</footer>
+  <section id="reader" class="hidden">
+   <div class="actions">
+    <button class="secondary" onclick="backChapters()">← Chapters</button>
+    <button onclick="saveCurrent()">Save Offline ↓</button>
+   </div>
+   <div class="card">
+    <div class="tag" id="lessonTag">STUDYSPHERE LESSON</div>
+    <h2 id="lessonTitle"></h2>
+    <div id="lessonBody" class="lesson"></div>
+    <p class="muted" id="lessonStatus"></p>
+   </div>
+  </section>
+
+  <section id="saved" class="hidden">
+   <h2>Saved for Offline</h2>
+   <p class="muted">These lessons are stored on this phone.</p>
+   <div id="savedList"></div>
+  </section>
+
+  <section id="english" class="hidden">
+   <button class="secondary" onclick="home()">← Home</button>
+   <h2>English Academy</h2>
+   <p class="muted">Start from the foundation and move towards advanced English.</p>
+   <div id="englishList"></div>
+  </section>
+ </main>
+ <footer>StudySphere • Keep learning, keep growing.</footer>
+</div>
 
 <script>
+const SUPABASE_URL="https://qsxfcvlqyxjjgpapoesr.supabase.co";
+const SUPABASE_KEY="sb_publishable_3liY4myr_WFdvIfcNRsIxA_qPFLbwl7";
+const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+
+let authMode="login";
+let currentSession=null;
+let recoveryMode=false;
+
+const authForm=document.getElementById("authForm");
+
+function setAuthMode(mode){
+ authMode=mode;
+ recoveryMode=false;
+ $("authMessage").textContent="";
+ $("authName").style.display=mode==="signup"?"block":"none";
+ $("authPassword").style.display="block";
+ $("authPassword").required=true;
+ $("authEmail").style.display="block";
+ $("authTitle").textContent=mode==="signup"?"Create Your Account":"Welcome Back!";
+ $("authDescription").textContent=mode==="signup"?"Join StudySphere and start learning.":"Login to continue your learning journey.";
+ $("authSubmit").textContent=mode==="signup"?"Create Account":"Login";
+ $("forgotBtn").style.display=mode==="login"?"block":"none";
+ $("switchText").innerHTML=mode==="signup"?
+ 'Already have an account? <span class="auth-switch" onclick="setAuthMode(\'login\')">Login</span>':
+ 'New student? <span class="auth-switch" onclick="setAuthMode(\'signup\')">Create Account</span>';
+}
+
+authForm.addEventListener("submit",async e=>{
+ e.preventDefault();
+ const email=$("authEmail").value.trim();
+ const password=$("authPassword").value;
+ const message=$("authMessage");
+ const btn=$("authSubmit");
+ btn.disabled=true;
+ message.textContent="Please wait...";
+
+ try{
+  if(recoveryMode){
+   const {error}=await supabaseClient.auth.updateUser({password});
+   if(error)throw error;
+   recoveryMode=false;
+   setAuthMode("login");
+   message.textContent="Password updated. Please log in.";
+  }
+  else if(authMode==="signup"){
+   if(password.length<6)throw new Error("Password must be at least 6 characters.");
+   const name=$("authName").value.trim();
+   const {data,error}=await supabaseClient.auth.signUp({
+    email,password,
+    options:{
+     data:{full_name:name},
+     emailRedirectTo:window.location.origin+window.location.pathname
+    }
+   });
+   if(error)throw error;
+   if(data.session){
+    message.textContent="Account created!";
+   }else{
+    message.textContent="Account created. Please check your email and verify your account before logging in.";
+    setAuthMode("login");
+   }
+  }else{
+   const {error}=await supabaseClient.auth.signInWithPassword({email,password});
+   if(error)throw error;
+   message.textContent="Login successful!";
+  }
+ }catch(error){
+  message.textContent=error.message;
+ }finally{
+  btn.disabled=false;
+ }
+});
+
+async function forgotPassword(){
+ const email=$("authEmail").value.trim();
+ if(!email){
+  $("authMessage").textContent="Please enter your email address first.";
+  return;
+ }
+ $("authMessage").textContent="Sending reset email...";
+ try{
+  const {error}=await supabaseClient.auth.resetPasswordForEmail(email,{
+   redirectTo:window.location.origin+window.location.pathname
+  });
+  if(error)throw error;
+  $("authMessage").textContent="Password reset link sent. Check your email.";
+ }catch(error){
+  $("authMessage").textContent=error.message;
+ }
+}
+
+async function logout(){
+ await supabaseClient.auth.signOut();
+}
+
+function showApp(session){
+ currentSession=session;
+ $("authScreen").classList.add("hidden");
+ $("app").classList.remove("hidden");
+ $("studentEmail").textContent=session.user.email||"Student";
+ init();
+}
+
+function showLogin(){
+ currentSession=null;
+ $("app").classList.add("hidden");
+ $("authScreen").classList.remove("hidden");
+}
+
+supabaseClient.auth.onAuthStateChange((event,session)=>{
+ if(event==="PASSWORD_RECOVERY"){
+  showLogin();
+  recoveryMode=true;
+  $("authTitle").textContent="Set New Password";
+  $("authDescription").textContent="Enter your new password below.";
+  $("authName").style.display="none";
+  $("authEmail").style.display="none";
+  $("authPassword").style.display="block";
+  $("authPassword").required=true;
+  $("authSubmit").textContent="Update Password";
+  $("forgotBtn").style.display="none";
+  $("switchText").textContent="";
+  $("authMessage").textContent="";
+ }
+ if(session)showApp(session);
+ else showLogin();
+});
+
+(async()=>{
+ const {data}=await supabaseClient.auth.getSession();
+ if(data.session)showApp(data.session);
+ else showLogin();
+})();
+
 const courses = {
 "9th Class":{
- Physics:[
- "Physical Quantities and Measurement","Kinematics","Dynamics",
- "Turning Effect of Forces","Forces and Matter","Gravitation",
- "Properties of Matter","Energy Sources and Transfer of Energy",
- "Thermal Properties of Matter"
- ],
- Chemistry:[
- "Fundamentals of Chemistry","Atomic Structure",
- "Periodic Table and Periodicity of Properties","Chemical Bonding",
- "Physical States of Matter","Solutions","Electrochemistry",
- "Chemical Reactivity"
- ],
- Biology:[
- "Introduction to Biology","Solving a Biological Problem","Biodiversity",
- "Cells and Tissues","Cell Cycle","Enzymes","Bioenergetics",
- "Nutrition","Transport"
- ]
+ Physics:["Physical Quantities and Measurement","Kinematics","Dynamics","Turning Effect of Forces","Forces and Matter","Gravitation","Properties of Matter","Energy Sources and Transfer of Energy","Thermal Properties of Matter"],
+ Chemistry:["Fundamentals of Chemistry","Atomic Structure","Periodic Table and Periodicity of Properties","Chemical Bonding","Physical States of Matter","Solutions","Electrochemistry","Chemical Reactivity"],
+ Biology:["Introduction to Biology","Solving a Biological Problem","Biodiversity","Cells and Tissues","Cell Cycle","Enzymes","Bioenergetics","Nutrition","Transport"]
 },
 "10th Class":{
- Physics:[
- "Simple Harmonic Motion and Waves","Sound","Geometrical Optics",
- "Electrostatics","Current Electricity","Electromagnetism",
- "Basic Electronics","Information and Communication Technology",
- "Atomic and Nuclear Physics"
- ],
- Chemistry:[
- "Chemical Equilibrium","Acids, Bases and Salts","Organic Chemistry",
- "Hydrocarbons","Biochemistry","The Atmosphere","Water",
- "Chemical Industries"
- ],
- Biology:[
- "Gaseous Exchange","Homeostasis","Coordination and Control",
- "Support and Movement","Reproduction","Inheritance",
- "Man and His Environment","Biotechnology","Biology and Human Welfare"
- ]
+ Physics:["Simple Harmonic Motion and Waves","Sound","Geometrical Optics","Electrostatics","Current Electricity","Electromagnetism","Basic Electronics","Information and Communication Technology","Atomic and Nuclear Physics"],
+ Chemistry:["Chemical Equilibrium","Acids, Bases and Salts","Organic Chemistry","Hydrocarbons","Biochemistry","The Atmosphere","Water","Chemical Industries"],
+ Biology:["Gaseous Exchange","Homeostasis","Coordination and Control","Support and Movement","Reproduction","Inheritance","Man and His Environment","Biotechnology","Biology and Human Welfare"]
 },
 "11th Class":{
- Physics:[
- "Measurements","Vectors and Equilibrium","Motion and Force",
- "Work and Energy","Circular Motion","Fluid Dynamics",
- "Oscillations","Waves","Physical Optics","Heat and Thermodynamics",
- "Electrostatics","Current Electricity","Electromagnetism",
- "Electronics and Communication"
- ],
- Chemistry:[
- "Stoichiometry","Atomic Structure","Chemical Bonding",
- "The Gaseous State","The Liquid State","The Solid State",
- "Chemical Equilibrium","Acids, Bases and Salts","Chemical Kinetics",
- "Solutions and Colloids","Thermochemistry","Electrochemistry",
- "Introduction to Organic Chemistry","Chemistry of Hydrocarbons"
- ],
- Biology:[
- "The Biology","Biological Molecules","Enzymes","The Cell",
- "The Variety of Life","Monera","Protista","The Kingdom Fungi",
- "The Kingdom Plantae","The Kingdom Animalia",
- "Forms and Functions in Plants","Holozoic Nutrition",
- "Circulation","Immunity and Gaseous Exchange"
- ]
+ Physics:["Measurements","Vectors and Equilibrium","Motion and Force","Work and Energy","Circular Motion","Fluid Dynamics","Oscillations","Waves","Physical Optics","Heat and Thermodynamics","Electrostatics","Current Electricity","Electromagnetism","Electronics and Communication"],
+ Chemistry:["Stoichiometry","Atomic Structure","Chemical Bonding","The Gaseous State","The Liquid State","The Solid State","Chemical Equilibrium","Acids, Bases and Salts","Chemical Kinetics","Solutions and Colloids","Thermochemistry","Electrochemistry","Introduction to Organic Chemistry","Chemistry of Hydrocarbons"],
+ Biology:["The Biology","Biological Molecules","Enzymes","The Cell","The Variety of Life","Monera","Protista","The Kingdom Fungi","The Kingdom Plantae","The Kingdom Animalia","Forms and Functions in Plants","Holozoic Nutrition","Circulation","Immunity and Gaseous Exchange"]
 },
 "12th Class":{
- Physics:[
- "Molecular Theory of Gases","First Law of Thermodynamics",
- "Second Law of Thermodynamics","Magnetic Fields",
- "Electromagnetic Induction","Alternating Current",
- "Physics of Solids","Solid State Electronics","Digital Electronics",
- "Relativity","Quantum Physics","Atomic Physics",
- "Nuclear Physics","Particle Physics"
- ],
- Chemistry:[
- "s-Block Elements","p-Block Elements","d- and f-Block Elements",
- "Fundamental Principles of Organic Chemistry","Aliphatic Hydrocarbons",
- "Aromatic Hydrocarbons","Alkyl Halides","Alcohols, Phenols and Ethers",
- "Aldehydes and Ketones","Carboxylic Acids","Macromolecules",
- "Environmental Chemistry","Industrial Chemistry","Analytical Chemistry"
- ],
- Biology:[
- "Homeostasis","Support and Movement","Nervous Coordination",
- "Chemical Coordination","Animal Behaviour","Reproduction",
- "Development and Aging","Chromosome and DNA","Inheritance",
- "Evolution","Man and His Environment","Biotechnology",
- "Biology and Human Welfare"
- ]
+ Physics:["Molecular Theory of Gases","First Law of Thermodynamics","Second Law of Thermodynamics","Magnetic Fields","Electromagnetic Induction","Alternating Current","Physics of Solids","Solid State Electronics","Digital Electronics","Relativity","Quantum Physics","Atomic Physics","Nuclear Physics","Particle Physics"],
+ Chemistry:["s-Block Elements","p-Block Elements","d- and f-Block Elements","Fundamental Principles of Organic Chemistry","Aliphatic Hydrocarbons","Aromatic Hydrocarbons","Alkyl Halides","Alcohols, Phenols and Ethers","Aldehydes and Ketones","Carboxylic Acids","Macromolecules","Environmental Chemistry","Industrial Chemistry","Analytical Chemistry"],
+ Biology:["Homeostasis","Support and Movement","Nervous Coordination","Chemical Coordination","Animal Behaviour","Reproduction","Development and Aging","Chromosome and DNA","Inheritance","Evolution","Man and His Environment","Biotechnology","Biology and Human Welfare"]
 }
 };
 
 const englishLevels=[
- ["Foundation","Alphabet, sounds, nouns, pronouns, verbs and simple sentences."],
- ["Beginner","Articles, adjectives, prepositions, basic tenses and daily vocabulary."],
- ["Elementary","Sentence structure, questions, negatives, everyday conversations."],
- ["Intermediate","All major tenses, modals, active/passive voice and paragraph writing."],
- ["Upper Intermediate","Reported speech, conditionals, comprehension and fluent conversations."],
- ["Advanced","Advanced grammar, essay writing, presentations, debates and critical reading."],
- ["Expert Practice","Academic English, professional communication, listening and speaking practice."]
+["Foundation","Alphabet, sounds, nouns, pronouns, verbs and simple sentences."],
+["Beginner","Articles, adjectives, prepositions, basic tenses and daily vocabulary."],
+["Elementary","Sentence structure, questions, negatives, everyday conversations."],
+["Intermediate","All major tenses, modals, active/passive voice and paragraph writing."],
+["Upper Intermediate","Reported speech, conditionals, comprehension and fluent conversations."],
+["Advanced","Advanced grammar, essay writing, presentations, debates and critical reading."],
+["Expert Practice","Academic English, professional communication, listening and speaking practice."]
 ];
 
 let grade="",subject="",chapter="",currentLesson=null;
@@ -269,34 +382,31 @@ function renderChapters(list){
   <div class="tag">CHAPTER ${i+1}</div>
   <h3>${c}</h3>
   <p>Chapter overview, learning goals and study notes.</p>
-  <button onclick="openLesson(${i})">Open Chapter</button>
+  <button onclick="openLessonByName('${c.replace(/'/g,"\\'")}')">Open Chapter</button>
  </div>`).join("");
 }
 function filterChapters(){
  const q=$("chapterSearch").value.toLowerCase();
  renderChapters(courses[grade][subject].filter(c=>c.toLowerCase().includes(q)));
 }
+function openLessonByName(name){
+ const index=courses[grade][subject].indexOf(name);
+ if(index>=0)openLesson(index);
+}
 
 function makeLesson(g,s,c){
- const isPhysics=s==="Physics";
- const isChem=s==="Chemistry";
- const isBio=s==="Biology";
- let intro=isPhysics?
+ const intro=s==="Physics"?
  "Physics explains how the natural world behaves through matter, energy, motion and forces.":
- isChem?
+ s==="Chemistry"?
  "Chemistry studies matter, its composition, structure, properties and the changes it undergoes.":
  "Biology is the scientific study of living organisms and their structure, functions and relationships.";
-
- let key=isPhysics?
+ const key=s==="Physics"?
  "Identify the physical quantities involved, their units and the scientific laws used to explain the chapter.":
- isChem?
+ s==="Chemistry"?
  "Identify the important terms, particles, properties and chemical processes connected with this chapter.":
  "Identify the important biological structures, processes, functions and examples connected with this chapter.";
-
  return {
-  id:g+"|"+s+"|"+c,
-  grade:g,subject:s,chapter:c,
-  title:c,
+  id:g+"|"+s+"|"+c,grade:g,subject:s,chapter:c,title:c,
   body:`
    <h3>1. Introduction</h3>
    <p>${intro}</p>
@@ -360,13 +470,13 @@ async function openLesson(index){
  chapter=courses[grade][subject][index];
  const id=grade+"|"+subject+"|"+chapter;
  const saved=(await getAllSaved()).find(x=>x.id===id);
- if(!navigator.onLine && !saved){
+ if(!navigator.onLine&&!saved){
   alert("This chapter is not saved on your phone yet. Connect to the internet to open it.");
   return;
  }
  currentLesson=saved||makeLesson(grade,subject,chapter);
  showLesson();
- if(navigator.onLine && !saved) await saveCurrent();
+ if(navigator.onLine&&!saved)await saveCurrent();
 }
 function showLesson(){
  $("lessonTag").textContent=currentLesson.grade+" • "+currentLesson.subject;
@@ -422,10 +532,8 @@ function openEnglish(i){
  grade="English Academy";
  subject="English";
  chapter=englishLevels[i][0];
- const lesson={
-  id:"English|"+chapter,
-  grade:"English Academy",
-  subject:"English",
+ currentLesson={
+  id:"English|"+chapter,grade:"English Academy",subject:"English",
   title:chapter,
   body:`
    <h3>Welcome to ${chapter}</h3>
@@ -445,7 +553,6 @@ function openEnglish(i){
    <p>This is a starter lesson. Full exercises, explanations and level tests will be added in the content-building stage.</p>
   `
  };
- currentLesson=lesson;
  showLesson();
  if(navigator.onLine)saveCurrent();
 }
@@ -455,7 +562,6 @@ if("serviceWorker" in navigator){
   navigator.serviceWorker.register("./sw.js").catch(err=>console.log(err));
  });
 }
-init();
 </script>
 </body>
 </html>
