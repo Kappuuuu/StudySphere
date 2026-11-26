@@ -49,6 +49,15 @@ footer{text-align:center;color:var(--muted);padding:28px;font-size:12px}
 .auth-switch{color:#b9adff;text-decoration:underline;cursor:pointer}
 .userbar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;background:var(--panel);padding:12px;border-radius:13px}
 @media(max-width:420px){main{padding:13px}.card{padding:12px}.grid{gap:8px}}
+
+.premium-panel{background:linear-gradient(135deg,#29265b,#171e33);border:1px solid #6659b8;border-radius:18px;padding:17px;margin:14px 0}
+.form-field{display:block;width:100%;padding:13px;margin:9px 0;background:#0b1020;border:1px solid #394767;border-radius:11px;color:white}
+.status-pill{display:inline-block;padding:5px 9px;border-radius:20px;background:#303a55;color:#e9eaff;font-size:12px;font-weight:bold}
+.status-active{background:#14533f;color:#b9ffe3}
+.status-pending{background:#59451a;color:#ffe5a3}
+.status-rejected{background:#572c38;color:#ffc4d0}
+.receipt-link{color:#b9adff;word-break:break-all}
+
 </style>
 </head>
 <body>
@@ -328,7 +337,7 @@ const englishLevels=[
 
 let grade="",subject="",chapter="",currentLesson=null;
 const $=id=>document.getElementById(id);
-const pages=["home","subjects","chapters","reader","saved","english"];
+const pages=["home","subjects","chapters","reader","saved","english","premium","admin"];
 
 function show(id){
  pages.forEach(p=>$(p).classList.add("hidden"));
@@ -556,6 +565,212 @@ function openEnglish(i){
  showLesson();
  if(navigator.onLine)saveCurrent();
 }
+
+
+// ---------------- PREMIUM MEMBERSHIP ----------------
+const ADMIN_USER_ID = "fd357f56-570c-40a7-9b86-5c2a50a936cd";
+let isStudySphereAdmin = false;
+
+function safeText(value){
+ return String(value ?? "").replace(/[&<>"']/g,ch=>({
+  "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+ }[ch]));
+}
+function statusClass(status){
+ if(status==="active"||status==="approved")return "status-pill status-active";
+ if(status==="pending")return "status-pill status-pending";
+ if(status==="rejected")return "status-pill status-rejected";
+ return "status-pill";
+}
+async function initPremium(){
+ if(!currentSession)return;
+ isStudySphereAdmin = currentSession.user.id===ADMIN_USER_ID;
+ $("adminNav").classList.toggle("hidden",!isStudySphereAdmin);
+ await refreshSubscriptionStatus();
+}
+async function refreshSubscriptionStatus(){
+ const box=$("subscriptionStatus");
+ if(!currentSession){box.textContent="Please log in.";return;}
+ const {data,error}=await supabaseClient
+  .from("subscriptions")
+  .select("starts_at,ends_at,status")
+  .eq("user_id",currentSession.user.id)
+  .eq("status","active")
+  .order("ends_at",{ascending:false})
+  .limit(1);
+ if(error){box.textContent="Membership status could not be loaded: "+error.message;return;}
+ const active=(data||[]).find(x=>new Date(x.ends_at).getTime()>Date.now());
+ if(active){
+  box.innerHTML='<span class="status-pill status-active">PREMIUM ACTIVE</span><p>Valid until: <b>'+safeText(new Date(active.ends_at).toLocaleString())+'</b></p>';
+ }else{
+  box.innerHTML='<span class="status-pill">FREE PLAN</span><p class="muted">No active Premium subscription found.</p>';
+ }
+}
+function premiumPage(){
+ show("premium");
+ loadMyPaymentRequests().catch(e=>$("myPaymentRequests").textContent=e.message);
+ refreshSubscriptionStatus();
+}
+async function loadMyPaymentRequests(){
+ const box=$("myPaymentRequests");
+ const {data,error}=await supabaseClient
+  .from("payment_requests")
+  .select("id,amount,method,transaction_reference,status,created_at,reviewed_at")
+  .eq("user_id",currentSession.user.id)
+  .order("created_at",{ascending:false});
+ if(error)throw error;
+ if(!data||!data.length){box.innerHTML='<p class="muted">No payment requests yet.</p>';return;}
+ box.innerHTML=data.map(r=>`
+  <div class="item">
+   <strong>Rs. ${safeText(r.amount)}</strong>
+   <span class="${statusClass(r.status)}">${safeText(String(r.status).toUpperCase())}</span>
+   <p>${safeText(r.method)} • Ref: ${safeText(r.transaction_reference)}</p>
+   <p class="muted">${safeText(new Date(r.created_at).toLocaleString())}</p>
+  </div>`).join("");
+}
+$("paymentForm").addEventListener("submit",async event=>{
+ event.preventDefault();
+ if(!currentSession){$("paymentMessage").textContent="Please log in first.";return;}
+ const method=$("paymentMethod").value;
+ const reference=$("transactionReference").value.trim();
+ const file=$("paymentReceipt").files[0];
+ const button=$("paymentSubmit");
+ const message=$("paymentMessage");
+ if(!method||!reference||!file){message.textContent="Complete all fields.";return;}
+ const allowed=["image/jpeg","image/png","image/webp"];
+ if(!allowed.includes(file.type)){message.textContent="Choose a JPG, PNG or WEBP image.";return;}
+ if(file.size>5*1024*1024){message.textContent="Receipt must be 5 MB or smaller.";return;}
+ button.disabled=true;
+ message.textContent="Uploading receipt and submitting request...";
+ try{
+  const userId=currentSession.user.id;
+  const ext=file.type==="image/png"?"png":file.type==="image/webp"?"webp":"jpg";
+  const filePath=userId+"/"+Date.now()+"-"+crypto.randomUUID()+"."+ext;
+  const {error:uploadError}=await supabaseClient.storage
+   .from("payment-receipts")
+   .upload(filePath,file,{contentType:file.type,upsert:false});
+  if(uploadError)throw uploadError;
+  const {error:insertError}=await supabaseClient
+   .from("payment_requests")
+   .insert({
+    user_id:userId,
+    amount:200,
+    method:method,
+    transaction_reference:reference,
+    receipt_path:filePath,
+    status:"pending"
+   });
+  if(insertError){
+   await supabaseClient.storage.from("payment-receipts").remove([filePath]);
+   throw insertError;
+  }
+  message.textContent="Request submitted. Admin will check the transaction before activation.";
+  $("paymentForm").reset();
+  await loadMyPaymentRequests();
+ }catch(error){
+  message.textContent="Could not submit request: "+error.message;
+ }finally{
+  button.disabled=false;
+ }
+});
+async function adminPage(){
+ if(!isStudySphereAdmin||currentSession.user.id!==ADMIN_USER_ID){
+  alert("Admin access required.");
+  return;
+ }
+ show("admin");
+ await loadAdminRequests();
+}
+async function loadAdminRequests(){
+ const box=$("adminRequests");
+ box.innerHTML='<p class="muted">Loading requests...</p>';
+ const {data,error}=await supabaseClient
+  .from("payment_requests")
+  .select("id,user_id,amount,method,transaction_reference,receipt_path,status,created_at")
+  .order("created_at",{ascending:false});
+ if(error){box.textContent="Could not load requests: "+error.message;return;}
+ if(!data||!data.length){box.innerHTML='<p class="muted">No payment requests found.</p>';return;}
+ const rows=await Promise.all(data.map(async r=>{
+  let receiptUrl="";
+  if(r.receipt_path){
+   const {data:urlData,error:urlError}=await supabaseClient.storage
+    .from("payment-receipts").createSignedUrl(r.receipt_path,60);
+   if(!urlError)receiptUrl=urlData.signedUrl;
+  }
+  return {r,receiptUrl};
+ }));
+ box.innerHTML=rows.map(({r,receiptUrl})=>`
+  <div class="item">
+   <span class="${statusClass(r.status)}">${safeText(String(r.status).toUpperCase())}</span>
+   <h3>Rs. ${safeText(r.amount)} • ${safeText(r.method)}</h3>
+   <p>Student ID: ${safeText(r.user_id)}</p>
+   <p>Transaction reference: <b>${safeText(r.transaction_reference)}</b></p>
+   <p class="muted">Submitted: ${safeText(new Date(r.created_at).toLocaleString())}</p>
+   ${receiptUrl?`<p><a class="receipt-link" href="${safeText(receiptUrl)}" target="_blank" rel="noopener">View receipt (temporary link)</a></p>`:'<p class="muted">Receipt link unavailable.</p>'}
+   ${r.status==="pending"?`
+    <div class="actions">
+     <button onclick="decidePayment('${safeText(r.id)}',true)">Approve + 30 days</button>
+     <button class="secondary" onclick="decidePayment('${safeText(r.id)}',false)">Reject</button>
+    </div>`:""}
+  </div>`).join("");
+}
+async function decidePayment(requestId,approve){
+ if(!isStudySphereAdmin||currentSession.user.id!==ADMIN_USER_ID){
+  alert("Admin access required.");return;
+ }
+ const action=approve?"approve":"reject";
+ if(!confirm("Confirm "+action+"? Only approve after checking the real transaction in the authorized payment account."))return;
+ try{
+  const {data:request,error:requestError}=await supabaseClient
+   .from("payment_requests")
+   .select("id,user_id,status")
+   .eq("id",requestId)
+   .single();
+  if(requestError)throw requestError;
+  if(request.status!=="pending")throw new Error("This request has already been reviewed.");
+  if(approve){
+   const {data:existing,error:findError}=await supabaseClient
+    .from("subscriptions")
+    .select("id,ends_at,status")
+    .eq("user_id",request.user_id)
+    .eq("status","active")
+    .order("ends_at",{ascending:false})
+    .limit(1);
+   if(findError)throw findError;
+   const now=new Date();
+   const current=(existing||[]).find(x=>new Date(x.ends_at).getTime()>now.getTime());
+   const start=current?new Date(current.ends_at):now;
+   const end=new Date(start.getTime()+30*24*60*60*1000);
+   if(current){
+    const {error:updateSubError}=await supabaseClient
+     .from("subscriptions")
+     .update({starts_at:now.toISOString(),ends_at:end.toISOString(),status:"active"})
+     .eq("id",current.id);
+    if(updateSubError)throw updateSubError;
+   }else{
+    const {error:insertSubError}=await supabaseClient
+     .from("subscriptions")
+     .insert({user_id:request.user_id,starts_at:now.toISOString(),ends_at:end.toISOString(),status:"active"});
+    if(insertSubError)throw insertSubError;
+   }
+  }
+  const {error:updateRequestError}=await supabaseClient
+   .from("payment_requests")
+   .update({
+    status:approve?"approved":"rejected",
+    reviewed_at:new Date().toISOString(),
+    reviewed_by:currentSession.user.id
+   })
+   .eq("id",requestId)
+   .eq("status","pending");
+  if(updateRequestError)throw updateRequestError;
+  alert(approve?"Payment approved. Premium subscription updated.":"Payment request rejected.");
+  await loadAdminRequests();
+ }catch(error){
+  alert("Action failed: "+error.message);
+ }
+}
+
 
 if("serviceWorker" in navigator){
  window.addEventListener("load",()=>{
