@@ -1,0 +1,651 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0b1020">
+<title>StudySphere | Learn Without Limits</title>
+
+<style>
+:root {
+  --bg:#0b1020;
+  --panel:#121b30;
+  --panel2:#1a2740;
+  --text:#f1f5ff;
+  --muted:#9eacc5;
+  --blue:#829fff;
+  --cyan:#5bd9d0;
+  --gold:#ffd078;
+  --border:#293956;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
+button{cursor:pointer;font:inherit}
+.sidebar{
+  position:fixed;
+  left:0;top:0;bottom:0;
+  width:240px;
+  padding:25px 18px;
+  background:#0d1527;
+  border-right:1px solid var(--border);
+}
+.brand{
+  font-size:23px;
+  font-weight:bold;
+  margin:8px 5px 35px;
+}
+.brand span{color:var(--cyan)}
+.nav button{
+  display:block;
+  width:100%;
+  padding:13px;
+  margin:5px 0;
+  text-align:left;
+  border:0;
+  border-radius:10px;
+  color:var(--muted);
+  background:transparent;
+}
+.nav button:hover,.nav button.active{
+  background:var(--panel2);
+  color:white;
+}
+main{
+  margin-left:240px;
+  padding:30px;
+  max-width:1450px;
+}
+header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:25px;
+}
+h1{font-size:30px;margin:5px 0}
+h2{font-size:22px}
+.muted{color:var(--muted)}
+.hero{
+  padding:35px;
+  border-radius:22px;
+  background:linear-gradient(120deg,#263f70,#174451);
+  border:1px solid #405c85;
+}
+.hero h2{font-size:36px;max-width:600px}
+.hero p{color:#d0dcef;max-width:550px;line-height:1.7}
+.btn{
+  padding:12px 18px;
+  border:0;
+  border-radius:10px;
+  background:var(--blue);
+  color:#071326;
+  font-weight:bold;
+}
+.btn.secondary{
+  background:var(--panel2);
+  color:white;
+  border:1px solid var(--border);
+}
+.grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:16px;
+}
+.card{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:20px;
+}
+.icon{font-size:35px}
+.tag{
+  display:inline-block;
+  padding:5px 10px;
+  border-radius:20px;
+  font-size:11px;
+  background:#21463e;
+  color:#9af0d4;
+}
+.premium-tag{
+  background:#4a3b20;
+  color:var(--gold);
+}
+.page{display:none}
+.page.active{display:block}
+.section-title{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin:30px 0 15px;
+}
+.lesson{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:15px;
+  margin:10px 0;
+}
+.lesson small{color:var(--muted)}
+.price-card{
+  max-width:500px;
+  margin:25px auto;
+  text-align:center;
+  padding:30px;
+  background:linear-gradient(150deg,#1e3155,#121b30);
+  border:1px solid #50668c;
+  border-radius:20px;
+}
+.price{font-size:45px;font-weight:bold}
+.price small{font-size:15px;color:var(--muted)}
+ul{line-height:2;text-align:left}
+.field{margin:13px 0;text-align:left}
+.field label{display:block;margin-bottom:6px;color:var(--muted)}
+.field input,.field select{
+  width:100%;
+  padding:12px;
+  background:#0b1426;
+  color:white;
+  border:1px solid var(--border);
+  border-radius:9px;
+}
+.payment-box{
+  background:#0b1426;
+  border:1px solid var(--border);
+  padding:15px;
+  border-radius:12px;
+  margin:12px 0;
+  text-align:left;
+}
+.payment-box strong{display:block}
+.payment-box code{color:var(--cyan);font-size:17px}
+.notice{
+  background:#1b2c48;
+  padding:13px;
+  border-radius:10px;
+  color:#cbd8ee;
+  font-size:13px;
+  margin:15px 0;
+}
+.modal{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:#000b;
+  z-index:5;
+  padding:20px;
+  overflow:auto;
+}
+.modal-content{
+  max-width:480px;
+  margin:30px auto;
+  padding:25px;
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:18px;
+}
+.close{
+  float:right;
+  background:none;
+  border:0;
+  color:white;
+  font-size:25px;
+}
+footer{
+  margin-top:45px;
+  padding:20px 0;
+  border-top:1px solid var(--border);
+  color:var(--muted);
+  font-size:12px;
+}
+@media(max-width:850px){
+  .sidebar{
+    position:relative;
+    width:100%;
+    height:auto;
+    padding:12px;
+  }
+  .brand{margin:5px 8px 12px}
+  .nav{display:flex;overflow-x:auto;gap:5px}
+  .nav button{white-space:nowrap;width:auto}
+  main{margin:0;padding:18px}
+  .grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:550px){
+  .grid{grid-template-columns:1fr}
+  .hero{padding:22px}
+  .hero h2{font-size:27px}
+  header h1{font-size:23px}
+}
+</style>
+</head>
+
+<body>
+
+<aside class="sidebar">
+  <div class="brand">Study<span>Sphere</span></div>
+  <nav class="nav">
+    <button class="active" onclick="showPage('home',this)">⌂ Dashboard</button>
+    <button onclick="showPage('courses',this)">▤ Courses</button>
+    <button onclick="showPage('practice',this)">✎ Practice MCQs</button>
+    <button onclick="showPage('premium',this)">♛ Premium</button>
+    <button onclick="showPage('payments',this)">◈ Payments</button>
+    <button onclick="showPage('support',this)">? Support</button>
+  </nav>
+</aside>
+
+<main>
+
+<header>
+  <div>
+    <div class="muted">YOUR LEARNING JOURNEY</div>
+    <h1 id="heading">Welcome to StudySphere 👋</h1>
+    <div class="muted">Learn. Practice. Improve.</div>
+  </div>
+  <div>🎓 Student</div>
+</header>
+
+<!-- HOME -->
+
+<section class="page active" id="home">
+
+<div class="hero">
+  <div class="tag">LEARN • PRACTICE • GROW</div>
+  <h2>Build Your Future One Lesson At A Time.</h2>
+  <p>
+    Explore science subjects, strengthen your concepts
+    and prepare for your academic goals with StudySphere.
+  </p>
+  <button class="btn" onclick="showPage('courses')">
+    Explore Courses →
+  </button>
+</div>
+
+<div class="section-title">
+  <h2>Your Subjects</h2>
+</div>
+
+<div class="grid">
+
+<div class="card">
+  <div class="icon">⚛️</div>
+  <span class="tag">FREE STARTER</span>
+  <h3>Physics</h3>
+  <p class="muted">Understand matter, measurement and motion.</p>
+  <button class="btn secondary" onclick="openCourse('Physics')">Open Course</button>
+</div>
+
+<div class="card">
+  <div class="icon">🧪</div>
+  <span class="tag">FREE STARTER</span>
+  <h3>Chemistry</h3>
+  <p class="muted">Explore atoms, elements and reactions.</p>
+  <button class="btn secondary" onclick="openCourse('Chemistry')">Open Course</button>
+</div>
+
+<div class="card">
+  <div class="icon">🧬</div>
+  <span class="tag">FREE STARTER</span>
+  <h3>Biology</h3>
+  <p class="muted">Discover cells and the living world.</p>
+  <button class="btn secondary" onclick="openCourse('Biology')">Open Course</button>
+</div>
+
+</div>
+
+<div class="notice">
+  StudySphere offers basic learning resources for free.
+  Premium resources require an active subscription.
+</div>
+
+</section>
+
+<!-- COURSES -->
+
+<section class="page" id="courses">
+<h2>Explore Courses</h2>
+<div class="grid">
+
+<div class="card">
+  <div class="icon">⚛️</div>
+  <h3>Physics</h3>
+  <p class="muted">Measurements, motion, force and energy.</p>
+  <button class="btn" onclick="openCourse('Physics')">View Lessons</button>
+</div>
+
+<div class="card">
+  <div class="icon">🧪</div>
+  <h3>Chemistry</h3>
+  <p class="muted">Matter, atoms and chemical bonding.</p>
+  <button class="btn" onclick="openCourse('Chemistry')">View Lessons</button>
+</div>
+
+<div class="card">
+  <div class="icon">🧬</div>
+  <h3>Biology</h3>
+  <p class="muted">Cells, genetics and human biology.</p>
+  <button class="btn" onclick="openCourse('Biology')">View Lessons</button>
+</div>
+
+</div>
+</section>
+
+<!-- COURSE DETAILS -->
+
+<section class="page" id="courseDetail">
+<button class="btn secondary" onclick="showPage('courses')">← Back</button>
+<h2 id="courseTitle">Lessons</h2>
+<div id="lessonList"></div>
+</section>
+
+<!-- PRACTICE -->
+
+<section class="page" id="practice">
+<h2>Practice & MCQs</h2>
+<div class="card">
+  <h3>Sample Physics Question</h3>
+  <p>Which unit is used to measure force?</p>
+
+  <label><input type="radio" name="answer" value="A"> Joule</label><br><br>
+  <label><input type="radio" name="answer" value="B"> Newton</label><br><br>
+  <label><input type="radio" name="answer" value="C"> Watt</label><br><br>
+
+  <button class="btn" onclick="checkAnswer()">Check Answer</button>
+  <p id="result"></p>
+</div>
+</section>
+
+<!-- PREMIUM -->
+
+<section class="page" id="premium">
+
+<div class="price-card">
+  <div class="tag premium-tag">STUDYSPHERE PREMIUM</div>
+  <h2>Unlock Your Learning</h2>
+
+  <div class="price">
+    Rs. 200
+    <small>/ 30 Days</small>
+  </div>
+
+  <ul>
+    <li>Premium chapter lessons</li>
+    <li>Detailed study notes</li>
+    <li>Additional MCQs</li>
+    <li>Extra learning resources</li>
+    <li>30 days access after approval</li>
+  </ul>
+
+  <button class="btn" onclick="openPayment()">
+    Get Premium Access
+  </button>
+
+  <p class="muted">
+    Payments are manually verified by the administrator.
+  </p>
+</div>
+
+</section>
+
+<!-- PAYMENTS -->
+
+<section class="page" id="payments">
+<h2>Payment Information</h2>
+<div class="card">
+  <h3>Subscription Plan</h3>
+  <p>Rs. 200 for 30 days</p>
+  <button class="btn" onclick="openPayment()">Submit Payment Request</button>
+  <div class="notice">
+    Payment history and request tracking will be enabled
+    after secure database integration.
+  </div>
+</div>
+</section>
+
+<!-- SUPPORT -->
+
+<section class="page" id="support">
+<h2>Help & Support</h2>
+<div class="card">
+  <h3>Need Help?</h3>
+  <p class="muted">
+    Contact StudySphere support for assistance with courses
+    and subscriptions.
+  </p>
+  <div class="notice">
+    Official WhatsApp support number will be added here.
+  </div>
+</div>
+</section>
+
+<footer>
+  © 2026 StudySphere. All rights reserved.
+  <br>Learn with curiosity. Grow with confidence.
+</footer>
+
+</main>
+
+<!-- PAYMENT MODAL -->
+
+<div class="modal" id="paymentModal">
+<div class="modal-content">
+
+<button class="close" onclick="closePayment()">×</button>
+
+<h2>Premium Payment</h2>
+<p class="muted">Rs. 200 / 30 Days</p>
+
+<div class="field">
+<label>Choose Payment Method</label>
+<select id="method" onchange="updateDetails()">
+<option value="Easypaisa">Easypaisa</option>
+<option value="JazzCash">JazzCash</option>
+</select>
+</div>
+
+<div class="payment-box" id="paymentDetails">
+<strong>Easypaisa</strong>
+<code>03329921682</code>
+<p>Account title: dheli</p>
+</div>
+
+<div class="notice">
+Confirm the account title before transferring money.
+Never share your PIN or OTP.
+</div>
+
+<form id="paymentForm">
+
+<div class="field">
+<label>Student Name</label>
+<input id="studentName" required>
+</div>
+
+<div class="field">
+<label>Transaction ID</label>
+<input id="transactionId" required>
+</div>
+
+<button class="btn" type="submit">Submit Demo Request</button>
+
+</form>
+
+<p class="muted">
+Demo form only. Real payment verification and admin
+approval require backend integration.
+</p>
+
+</div>
+</div>
+
+<script>
+
+const courseData = {
+
+Physics:[
+["Introduction to Physics","FREE"],
+["Matter and its States","FREE"],
+["Measurement and Physical Quantities","FREE"],
+["Motion and Speed","PREMIUM"],
+["Force and Newton's Laws","PREMIUM"]
+],
+
+Chemistry:[
+["Introduction to Chemistry","FREE"],
+["Matter and Classification","FREE"],
+["Atoms and Elements","FREE"],
+["Periodic Table","PREMIUM"],
+["Chemical Bonding","PREMIUM"]
+],
+
+Biology:[
+["Introduction to Biology","FREE"],
+["Characteristics of Living Things","FREE"],
+["Cell: Basic Unit of Life","FREE"],
+["Biological Molecules","PREMIUM"],
+["Cell Division","PREMIUM"]
+]
+
+};
+
+function showPage(id,button){
+
+document.querySelectorAll(".page").forEach(page=>{
+page.classList.remove("active");
+});
+
+document.getElementById(id).classList.add("active");
+
+document.querySelectorAll(".nav button").forEach(btn=>{
+btn.classList.remove("active");
+});
+
+if(button) button.classList.add("active");
+
+const titles={
+home:"Welcome to StudySphere 👋",
+courses:"Explore Courses",
+courseDetail:"Course Lessons",
+practice:"Practice & MCQs",
+premium:"StudySphere Premium",
+payments:"My Payments",
+support:"Help & Support"
+};
+
+document.getElementById("heading").textContent=titles[id]||"StudySphere";
+
+window.scrollTo(0,0);
+}
+
+function openCourse(name){
+
+document.getElementById("courseTitle").textContent=name;
+
+const list=document.getElementById("lessonList");
+
+list.innerHTML="";
+
+courseData[name].forEach((lesson,index)=>{
+
+const isFree=lesson[1]==="FREE";
+
+const div=document.createElement("div");
+div.className="lesson";
+
+const title=document.createElement("div");
+title.innerHTML="<b>"+(index+1)+". "+lesson[0]+"</b><br><small>"+lesson[1]+"</small>";
+
+const button=document.createElement("button");
+button.className="btn "+(isFree?"secondary":"");
+button.textContent=isFree?"Open":"Premium";
+
+button.onclick=()=>{
+if(isFree){
+alert("Lesson content will be added in the next development phase.");
+}else{
+showPage("premium");
+}
+};
+
+div.appendChild(title);
+div.appendChild(button);
+list.appendChild(div);
+
+});
+
+showPage("courseDetail");
+
+}
+
+function checkAnswer(){
+
+const selected=document.querySelector('input[name="answer"]:checked');
+
+if(!selected){
+document.getElementById("result").textContent="Select an answer first.";
+return;
+}
+
+document.getElementById("result").textContent=
+selected.value==="B"
+?"Correct! Force is measured in Newtons."
+:"Incorrect. Correct answer: Newton.";
+
+}
+
+function openPayment(){
+document.getElementById("paymentModal").style.display="block";
+}
+
+function closePayment(){
+document.getElementById("paymentModal").style.display="none";
+}
+
+function updateDetails(){
+
+const method=document.getElementById("method").value;
+
+const details=document.getElementById("paymentDetails");
+
+if(method==="Easypaisa"){
+
+details.innerHTML=
+"<strong>Easypaisa</strong>"+
+"<code>03329921682</code>"+
+"<p>Account title: dheli</p>";
+
+}else{
+
+details.innerHTML=
+"<strong>JazzCash</strong>"+
+"<code>03171059362</code>"+
+"<p>Account title: aisardas</p>";
+
+}
+
+}
+
+document.getElementById("paymentForm").addEventListener("submit",function(e){
+
+e.preventDefault();
+
+alert("Demo only: No payment request was sent or verified.");
+
+closePayment();
+this.reset();
+
+});
+
+</script>
+
+</body>
+  </html>
+    
