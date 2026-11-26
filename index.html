@@ -3,165 +3,332 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#101323">
 <title>StudySphere | Learn Without Limits</title>
 <link rel="manifest" href="manifest.json">
 <style>
-:root{--bg:#0c1020;--panel:#171d32;--panel2:#202943;--text:#f4f6ff;--muted:#a5aec6;--accent:#8b7cff;--green:#46d6a0}
+:root{--bg:#0b1020;--panel:#171e33;--panel2:#222d49;--text:#f5f6ff;--muted:#aab4ce;--accent:#8b7cff;--green:#43d6a0}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,sans-serif}
-header{padding:22px 18px;background:linear-gradient(135deg,#24244b,#151b32)}
-.brand{font-size:25px;font-weight:800;letter-spacing:.4px}
-.brand span{color:#a99cff}
-header p{color:#c0c5dc;margin:8px 0 0;font-size:13px}
-main{max-width:850px;margin:auto;padding:18px}
-h2{font-size:19px;margin:24px 0 12px}
+header{padding:24px 18px;background:linear-gradient(135deg,#29265b,#151c35)}
+.brand{font-size:27px;font-weight:800}.brand span{color:#a99cff}
+header p{color:#c5c9e0;margin:8px 0 0}
+main{max-width:900px;margin:auto;padding:17px}
+h2{font-size:21px;margin:22px 0 12px}
+h3{margin:8px 0}
+p{line-height:1.6}
 .muted{color:var(--muted);font-size:13px}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-.card{background:var(--panel);border:1px solid #29324c;border-radius:16px;padding:16px}
-.card h3{margin:8px 0;font-size:16px}
-.card p{color:var(--muted);font-size:12px;line-height:1.5}
-button{border:0;border-radius:11px;background:var(--accent);color:white;padding:11px 14px;font-weight:700;cursor:pointer}
-button.secondary{background:var(--panel2);border:1px solid #394461}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+.card,.item{background:var(--panel);border:1px solid #2b3654;border-radius:16px;padding:15px}
+.card p,.item p{color:var(--muted);font-size:13px}
+button{border:0;border-radius:11px;padding:12px 15px;background:var(--accent);color:white;font-weight:bold;cursor:pointer}
+button.secondary{background:var(--panel2);border:1px solid #394767}
 button:disabled{opacity:.5}
-.actions{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
-input{width:100%;padding:14px;background:var(--panel);border:1px solid #394461;border-radius:12px;color:white;margin:10px 0}
-.item{background:var(--panel);padding:15px;border-radius:13px;margin:9px 0;border:1px solid #29324c}
-.item button{margin-top:9px}
-.hidden{display:none!important}
-.lesson-body{line-height:1.8;color:#dce2f5}
-.lesson-body h3{color:#b8adff}
-.tag{font-size:11px;color:var(--green)}
-footer{text-align:center;padding:30px;color:var(--muted);font-size:12px}
 nav{display:flex;gap:8px;overflow:auto;padding:12px 0}
 nav button{white-space:nowrap}
-@media(max-width:430px){main{padding:14px}.grid{gap:9px}.card{padding:12px}}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.item{margin:10px 0}
+.item button{margin-top:8px}
+.hidden{display:none!important}
+.tag{font-size:11px;color:var(--green);font-weight:bold;letter-spacing:1px}
+.lesson{line-height:1.8;color:#e0e5f5}
+.lesson h3{color:#b9adff;margin-top:20px}
+.lesson li{margin:8px 0}
+.search{width:100%;padding:14px;border-radius:12px;background:var(--panel);border:1px solid #394767;color:white;margin:12px 0}
+.progress{height:7px;background:#303a55;border-radius:9px;overflow:hidden}
+.progress div{height:100%;background:var(--green);width:0}
+footer{text-align:center;color:var(--muted);padding:28px;font-size:12px}
+@media(max-width:420px){main{padding:13px}.card{padding:12px}.grid{gap:8px}}
 </style>
 </head>
 <body>
 <header>
-  <div class="brand">Study<span>Sphere</span> ✦</div>
-  <p>Learn Without Limits • Sindh Board • Class 9–12</p>
+ <div class="brand">Study<span>Sphere</span> ✦</div>
+ <p>Learn Without Limits • Sindh Board • Class 9–12</p>
 </header>
 
 <main>
-  <div class="actions">
-    <button onclick="showHome()">Home</button>
-    <button class="secondary" onclick="showSaved()">Saved for Offline</button>
+ <nav>
+  <button onclick="home()">Home</button>
+  <button class="secondary" onclick="savedPage()">Saved Offline</button>
+  <button class="secondary" onclick="englishPage()">English Academy</button>
+ </nav>
+ <div class="muted" id="network">Checking connection...</div>
+
+ <section id="home">
+  <h2>Welcome to StudySphere 👋</h2>
+  <p class="muted">Choose your class and explore your subjects.</p>
+  <div class="grid" id="grades"></div>
+  <h2>English Academy</h2>
+  <div class="card">
+   <h3>English: Beginner to Advanced</h3>
+   <p>Grammar • Vocabulary • Reading • Writing • Listening • Speaking</p>
+   <button onclick="englishPage()">Start English</button>
   </div>
+  <h2>Your Learning Progress</h2>
+  <div class="card">
+   <strong id="progressCount">0 lessons saved</strong>
+   <p class="muted">Saved lessons remain available on this device.</p>
+   <div class="progress"><div id="progressBar"></div></div>
+  </div>
+ </section>
 
-  <div id="status" class="muted">Checking connection...</div>
+ <section id="subjects" class="hidden">
+  <button class="secondary" onclick="home()">← Home</button>
+  <h2 id="subjectHeading"></h2>
+  <div class="grid" id="subjectGrid"></div>
+ </section>
 
-  <section id="home">
-    <h2>Welcome to your learning space 👋</h2>
-    <p class="muted">Choose your class and start learning at your own pace.</p>
-    <div class="grid" id="grades"></div>
+ <section id="chapters" class="hidden">
+  <button class="secondary" onclick="backSubjects()">← Subjects</button>
+  <h2 id="chapterHeading"></h2>
+  <input class="search" id="chapterSearch" placeholder="Search chapters..." oninput="filterChapters()">
+  <div id="chapterList"></div>
+ </section>
 
-    <h2>English Academy</h2>
-    <div class="card">
-      <h3>English: Beginner to Advanced</h3>
-      <p>Grammar, vocabulary, reading, writing, listening, speaking and pronunciation.</p>
-      <button onclick="showEnglish()">Explore English</button>
-    </div>
-  </section>
+ <section id="reader" class="hidden">
+  <div class="actions">
+   <button class="secondary" onclick="backChapters()">← Chapters</button>
+   <button onclick="saveCurrent()">Save Offline ↓</button>
+  </div>
+  <div class="card">
+   <div class="tag" id="lessonTag">STUDYSPHERE LESSON</div>
+   <h2 id="lessonTitle"></h2>
+   <div id="lessonBody" class="lesson"></div>
+   <p class="muted" id="lessonStatus"></p>
+  </div>
+ </section>
 
-  <section id="catalog" class="hidden">
-    <div class="actions"><button class="secondary" onclick="showHome()">← Back</button></div>
-    <h2 id="catalogTitle">Courses</h2>
-    <div id="subjects" class="grid"></div>
-  </section>
+ <section id="saved" class="hidden">
+  <h2>Saved for Offline</h2>
+  <p class="muted">These lessons are stored on this phone.</p>
+  <div id="savedList"></div>
+ </section>
 
-  <section id="lessons" class="hidden">
-    <div class="actions"><button class="secondary" onclick="backToCatalog()">← Back</button></div>
-    <h2 id="lessonTitle">Lessons</h2>
-    <div id="lessonList"></div>
-  </section>
-
-  <section id="reader" class="hidden">
-    <div class="actions">
-      <button class="secondary" onclick="backToLessons()">← Lessons</button>
-      <button onclick="saveCurrent()">Save for Offline ↓</button>
-    </div>
-    <div class="card">
-      <div class="tag" id="readerTag">LESSON</div>
-      <h2 id="readerTitle"></h2>
-      <div id="readerBody" class="lesson-body"></div>
-      <p class="muted" id="saveMessage"></p>
-    </div>
-  </section>
-
-  <section id="saved" class="hidden">
-    <h2>Saved for Offline</h2>
-    <p class="muted">Lessons you've opened and saved on this device.</p>
-    <div id="savedList"></div>
-  </section>
+ <section id="english" class="hidden">
+  <button class="secondary" onclick="home()">← Home</button>
+  <h2>English Academy</h2>
+  <p class="muted">Start from the foundation and move towards advanced English.</p>
+  <div id="englishList"></div>
+ </section>
 </main>
-
 <footer>StudySphere • Keep learning, keep growing.</footer>
 
 <script>
-const subjects=["Physics","Chemistry","Biology"];
-const grades=["9th Class","10th Class","11th Class","12th Class"];
-const englishLevels=["Foundation","Beginner","Intermediate","Upper Intermediate","Advanced"];
-
-const courseData={
- "9th Class":{
-  Physics:["Physical Quantities and Measurement","Kinematics","Dynamics","Turning Effect of Forces"],
-  Chemistry:["Fundamentals of Chemistry","Structure of Atom","Periodic Table","Chemical Bonding"],
-  Biology:["Introduction to Biology","Solving a Biological Problem","Biodiversity","Cells and Tissues"]
- },
- "10th Class":{
-  Physics:["Simple Harmonic Motion","Sound","Geometrical Optics","Electrostatics"],
-  Chemistry:["Chemical Equilibrium","Acids, Bases and Salts","Organic Chemistry","Chemical Industries"],
-  Biology:["Gaseous Exchange","Homeostasis","Coordination and Control","Reproduction"]
- },
- "11th Class":{
-  Physics:["Measurements","Vectors and Equilibrium","Motion and Force","Work and Energy"],
-  Chemistry:["Basic Concepts","Experimental Techniques","Gases","Liquids and Solids"],
-  Biology:["Cell Biology","Biological Molecules","Enzymes","Bioenergetics"]
- },
- "12th Class":{
-  Physics:["Electrostatics","Current Electricity","Electromagnetism","Electronics"],
-  Chemistry:["Chemical Equilibrium","Electrochemistry","Reaction Kinetics","Organic Compounds"],
-  Biology:["Support and Movement","Coordination and Control","Reproduction","Genetics"]
- }
+const courses = {
+"9th Class":{
+ Physics:[
+ "Physical Quantities and Measurement","Kinematics","Dynamics",
+ "Turning Effect of Forces","Forces and Matter","Gravitation",
+ "Properties of Matter","Energy Sources and Transfer of Energy",
+ "Thermal Properties of Matter"
+ ],
+ Chemistry:[
+ "Fundamentals of Chemistry","Atomic Structure",
+ "Periodic Table and Periodicity of Properties","Chemical Bonding",
+ "Physical States of Matter","Solutions","Electrochemistry",
+ "Chemical Reactivity"
+ ],
+ Biology:[
+ "Introduction to Biology","Solving a Biological Problem","Biodiversity",
+ "Cells and Tissues","Cell Cycle","Enzymes","Bioenergetics",
+ "Nutrition","Transport"
+ ]
+},
+"10th Class":{
+ Physics:[
+ "Simple Harmonic Motion and Waves","Sound","Geometrical Optics",
+ "Electrostatics","Current Electricity","Electromagnetism",
+ "Basic Electronics","Information and Communication Technology",
+ "Atomic and Nuclear Physics"
+ ],
+ Chemistry:[
+ "Chemical Equilibrium","Acids, Bases and Salts","Organic Chemistry",
+ "Hydrocarbons","Biochemistry","The Atmosphere","Water",
+ "Chemical Industries"
+ ],
+ Biology:[
+ "Gaseous Exchange","Homeostasis","Coordination and Control",
+ "Support and Movement","Reproduction","Inheritance",
+ "Man and His Environment","Biotechnology","Biology and Human Welfare"
+ ]
+},
+"11th Class":{
+ Physics:[
+ "Measurements","Vectors and Equilibrium","Motion and Force",
+ "Work and Energy","Circular Motion","Fluid Dynamics",
+ "Oscillations","Waves","Physical Optics","Heat and Thermodynamics",
+ "Electrostatics","Current Electricity","Electromagnetism",
+ "Electronics and Communication"
+ ],
+ Chemistry:[
+ "Stoichiometry","Atomic Structure","Chemical Bonding",
+ "The Gaseous State","The Liquid State","The Solid State",
+ "Chemical Equilibrium","Acids, Bases and Salts","Chemical Kinetics",
+ "Solutions and Colloids","Thermochemistry","Electrochemistry",
+ "Introduction to Organic Chemistry","Chemistry of Hydrocarbons"
+ ],
+ Biology:[
+ "The Biology","Biological Molecules","Enzymes","The Cell",
+ "The Variety of Life","Monera","Protista","The Kingdom Fungi",
+ "The Kingdom Plantae","The Kingdom Animalia",
+ "Forms and Functions in Plants","Holozoic Nutrition",
+ "Circulation","Immunity and Gaseous Exchange"
+ ]
+},
+"12th Class":{
+ Physics:[
+ "Molecular Theory of Gases","First Law of Thermodynamics",
+ "Second Law of Thermodynamics","Magnetic Fields",
+ "Electromagnetic Induction","Alternating Current",
+ "Physics of Solids","Solid State Electronics","Digital Electronics",
+ "Relativity","Quantum Physics","Atomic Physics",
+ "Nuclear Physics","Particle Physics"
+ ],
+ Chemistry:[
+ "s-Block Elements","p-Block Elements","d- and f-Block Elements",
+ "Fundamental Principles of Organic Chemistry","Aliphatic Hydrocarbons",
+ "Aromatic Hydrocarbons","Alkyl Halides","Alcohols, Phenols and Ethers",
+ "Aldehydes and Ketones","Carboxylic Acids","Macromolecules",
+ "Environmental Chemistry","Industrial Chemistry","Analytical Chemistry"
+ ],
+ Biology:[
+ "Homeostasis","Support and Movement","Nervous Coordination",
+ "Chemical Coordination","Animal Behaviour","Reproduction",
+ "Development and Aging","Chromosome and DNA","Inheritance",
+ "Evolution","Man and His Environment","Biotechnology",
+ "Biology and Human Welfare"
+ ]
+}
 };
 
-const sampleLessons={
- "Physical Quantities and Measurement":{
-  title:"Introduction to Physical Quantities",
-  body:`<h3>What is Physics?</h3>
-  <p>Physics is the branch of science that studies matter, energy, motion and the laws of nature.</p>
-  <h3>Physical Quantity</h3>
-  <p>A physical quantity is a property that can be measured, such as length, mass, time or temperature.</p>
-  <h3>Examples</h3>
-  <ul><li>Length — metre (m)</li><li>Mass — kilogram (kg)</li><li>Time — second (s)</li></ul>
-  <h3>Remember</h3><p>A measurement is written with a number and a unit.</p>`
- },
- "Fundamentals of Chemistry":{
-  title:"Introduction to Chemistry",
-  body:`<h3>What is Chemistry?</h3>
-  <p>Chemistry is the study of matter, its composition, properties and the changes it undergoes.</p>
-  <h3>Matter</h3><p>Matter is anything that has mass and occupies space.</p>
-  <h3>States of Matter</h3><ul><li>Solid</li><li>Liquid</li><li>Gas</li></ul>`
- },
- "Introduction to Biology":{
-  title:"Introduction to Biology",
-  body:`<h3>What is Biology?</h3>
-  <p>Biology is the scientific study of living organisms.</p>
-  <h3>Branches of Biology</h3><ul><li>Botany — study of plants</li><li>Zoology — study of animals</li><li>Microbiology — study of microorganisms</li></ul>`
- }
-};
+const englishLevels=[
+ ["Foundation","Alphabet, sounds, nouns, pronouns, verbs and simple sentences."],
+ ["Beginner","Articles, adjectives, prepositions, basic tenses and daily vocabulary."],
+ ["Elementary","Sentence structure, questions, negatives, everyday conversations."],
+ ["Intermediate","All major tenses, modals, active/passive voice and paragraph writing."],
+ ["Upper Intermediate","Reported speech, conditionals, comprehension and fluent conversations."],
+ ["Advanced","Advanced grammar, essay writing, presentations, debates and critical reading."],
+ ["Expert Practice","Academic English, professional communication, listening and speaking practice."]
+];
 
-let current={};
-let currentGrade="";
-let currentSubject="";
-let currentLessons=[];
-let currentLesson=null;
+let grade="",subject="",chapter="",currentLesson=null;
+const $=id=>document.getElementById(id);
+const pages=["home","subjects","chapters","reader","saved","english"];
 
-const dbPromise=new Promise((resolve,reject)=>{
- const request=indexedDB.open("StudySphereOffline",1);
+function show(id){
+ pages.forEach(p=>$(p).classList.add("hidden"));
+ $(id).classList.remove("hidden");
+ window.scrollTo(0,0);
+}
+function home(){show("home")}
+function backSubjects(){openGrade(grade)}
+function backChapters(){openSubject(subject)}
+
+function init(){
+ $("grades").innerHTML=Object.keys(courses).map(g=>`
+ <div class="card">
+  <div style="font-size:25px">📚</div>
+  <h3>${g}</h3>
+  <p>Physics • Chemistry • Biology</p>
+  <button onclick="openGrade('${g}')">Explore Class</button>
+ </div>`).join("");
+ updateNetwork();
+ updateProgress();
+}
+function updateNetwork(){
+ $("network").textContent=navigator.onLine?
+ "🟢 Online — you can open new chapters.":
+ "🟠 Offline — only saved lessons can be opened.";
+}
+window.addEventListener("online",updateNetwork);
+window.addEventListener("offline",updateNetwork);
+
+function openGrade(g){
+ grade=g;
+ $("subjectHeading").textContent=g+" Subjects";
+ $("subjectGrid").innerHTML=Object.keys(courses[g]).map(s=>`
+ <div class="card">
+  <h3>${s}</h3>
+  <p>${courses[g][s].length} chapters listed</p>
+  <button onclick="openSubject('${s}')">Open Subject</button>
+ </div>`).join("");
+ show("subjects");
+}
+function openSubject(s){
+ subject=s;
+ $("chapterHeading").textContent=grade+" • "+subject;
+ $("chapterSearch").value="";
+ renderChapters(courses[grade][subject]);
+ show("chapters");
+}
+function renderChapters(list){
+ $("chapterList").innerHTML=list.map((c,i)=>`
+ <div class="item">
+  <div class="tag">CHAPTER ${i+1}</div>
+  <h3>${c}</h3>
+  <p>Chapter overview, learning goals and study notes.</p>
+  <button onclick="openLesson(${i})">Open Chapter</button>
+ </div>`).join("");
+}
+function filterChapters(){
+ const q=$("chapterSearch").value.toLowerCase();
+ renderChapters(courses[grade][subject].filter(c=>c.toLowerCase().includes(q)));
+}
+
+function makeLesson(g,s,c){
+ const isPhysics=s==="Physics";
+ const isChem=s==="Chemistry";
+ const isBio=s==="Biology";
+ let intro=isPhysics?
+ "Physics explains how the natural world behaves through matter, energy, motion and forces.":
+ isChem?
+ "Chemistry studies matter, its composition, structure, properties and the changes it undergoes.":
+ "Biology is the scientific study of living organisms and their structure, functions and relationships.";
+
+ let key=isPhysics?
+ "Identify the physical quantities involved, their units and the scientific laws used to explain the chapter.":
+ isChem?
+ "Identify the important terms, particles, properties and chemical processes connected with this chapter.":
+ "Identify the important biological structures, processes, functions and examples connected with this chapter.";
+
+ return {
+  id:g+"|"+s+"|"+c,
+  grade:g,subject:s,chapter:c,
+  title:c,
+  body:`
+   <h3>1. Introduction</h3>
+   <p>${intro}</p>
+   <p>This StudySphere lesson introduces the chapter <b>${c}</b>.</p>
+   <h3>2. What you should learn</h3>
+   <ul>
+    <li>Understand the meaning and purpose of ${c}.</li>
+    <li>Learn the important scientific vocabulary.</li>
+    <li>Connect the topic with real-life examples.</li>
+    <li>Explain the main ideas in your own words.</li>
+   </ul>
+   <h3>3. Key learning point</h3>
+   <p>${key}</p>
+   <h3>4. Study method</h3>
+   <ol>
+    <li>Read the chapter from your prescribed textbook.</li>
+    <li>Write down unfamiliar terms and their meanings.</li>
+    <li>Make short notes in your own words.</li>
+    <li>Practice diagrams, formulas or reactions where relevant.</li>
+    <li>Revise the topic and test your understanding.</li>
+   </ol>
+   <h3>5. Check your understanding</h3>
+   <p><b>Question:</b> What is the main idea of ${c}?</p>
+   <p><b>Practice:</b> Write five important points from this chapter.</p>
+   <h3>6. Important note</h3>
+   <p>This is an original introductory study guide, not a reproduction of the complete textbook chapter. Detailed explanations, solved examples, exercises and chapter tests will be added to the course content.</p>
+  `
+ };
+}
+
+const dbReady=new Promise((resolve,reject)=>{
+ const request=indexedDB.open("StudySphereLibrary",1);
  request.onupgradeneeded=()=>{
   const db=request.result;
   if(!db.objectStoreNames.contains("lessons"))
@@ -171,18 +338,8 @@ const dbPromise=new Promise((resolve,reject)=>{
  request.onerror=()=>reject(request.error);
 });
 
-async function saveLesson(lesson){
- const db=await dbPromise;
- return new Promise((resolve,reject)=>{
-  const tx=db.transaction("lessons","readwrite");
-  tx.objectStore("lessons").put(lesson);
-  tx.oncomplete=()=>resolve(true);
-  tx.onerror=()=>reject(tx.error);
- });
-}
-
-async function getSaved(){
- const db=await dbPromise;
+async function getAllSaved(){
+ const db=await dbReady;
  return new Promise((resolve,reject)=>{
   const tx=db.transaction("lessons","readonly");
   const req=tx.objectStore("lessons").getAll();
@@ -190,130 +347,113 @@ async function getSaved(){
   req.onerror=()=>reject(req.error);
  });
 }
-
-function hideAll(){
- ["home","catalog","lessons","reader","saved"].forEach(id=>
-  document.getElementById(id).classList.add("hidden"));
+async function storeLesson(item){
+ const db=await dbReady;
+ return new Promise((resolve,reject)=>{
+  const tx=db.transaction("lessons","readwrite");
+  tx.objectStore("lessons").put(item);
+  tx.oncomplete=()=>resolve(true);
+  tx.onerror=()=>reject(tx.error);
+ });
 }
-function showHome(){hideAll();document.getElementById("home").classList.remove("hidden")}
-function showSaved(){hideAll();document.getElementById("saved").classList.remove("hidden");renderSaved()}
-
-function init(){
- document.getElementById("grades").innerHTML=grades.map(g=>
- `<div class="card"><div>📚</div><h3>${g}</h3>
- <p>Physics • Chemistry • Biology</p>
- <button onclick="openGrade('${g}')">Explore Class</button></div>`
- ).join("");
- updateStatus();
-}
-function updateStatus(){
- const online=navigator.onLine;
- document.getElementById("status").textContent=online?
- "🟢 Online — new lessons can be opened and saved.":
- "🟠 Offline — only saved lessons are available.";
-}
-window.addEventListener("online",updateStatus);
-window.addEventListener("offline",updateStatus);
-
-function openGrade(grade){
- currentGrade=grade;
- hideAll();
- document.getElementById("catalog").classList.remove("hidden");
- document.getElementById("catalogTitle").textContent=grade+" Subjects";
- document.getElementById("subjects").innerHTML=subjects.map(s=>
- `<div class="card"><h3>${s}</h3><p>Chapter-wise study material</p>
- <button onclick="openSubject('${s}')">Open Subject</button></div>`
- ).join("");
-}
-function openSubject(subject){
- currentSubject=subject;
- currentLessons=courseData[currentGrade][subject]||[];
- hideAll();
- document.getElementById("lessons").classList.remove("hidden");
- document.getElementById("lessonTitle").textContent=currentGrade+" • "+subject;
- renderLessons();
-}
-async function renderLessons(){
- const saved=await getSaved();
- const savedIds=new Set(saved.map(x=>x.id));
- document.getElementById("lessonList").innerHTML=currentLessons.map((name,i)=>{
-  const id=currentGrade+"|"+currentSubject+"|"+name;
-  return `<div class="item"><strong>${i+1}. ${name}</strong>
-  <p class="muted">${savedIds.has(id)?"✓ Saved for offline":"Internet required for first opening"}</p>
-  <button onclick="openLesson('${encodeURIComponent(name)}')">Open Lesson</button></div>`;
- }).join("");
-}
-async function openLesson(encoded){
- const name=decodeURIComponent(encoded);
- const id=currentGrade+"|"+currentSubject+"|"+name;
- let saved=(await getSaved()).find(x=>x.id===id);
+async function openLesson(index){
+ chapter=courses[grade][subject][index];
+ const id=grade+"|"+subject+"|"+chapter;
+ const saved=(await getAllSaved()).find(x=>x.id===id);
  if(!navigator.onLine && !saved){
-  alert("This chapter has not been saved yet. Connect to the internet to open it.");
+  alert("This chapter is not saved on your phone yet. Connect to the internet to open it.");
   return;
  }
- const sample=sampleLessons[name];
- if(!saved && !sample){
-  alert("This sample version does not yet contain this lesson. Full chapter content will be added through the course system.");
-  return;
- }
- currentLesson=saved||{
-  id,grade:currentGrade,subject:currentSubject,
-  title:sample.title,chapter:name,body:sample.body,
-  savedAt:Date.now()
- };
- hideAll();
- document.getElementById("reader").classList.remove("hidden");
- document.getElementById("readerTitle").textContent=currentLesson.title;
- document.getElementById("readerTag").textContent=currentLesson.grade+" • "+currentLesson.subject;
- document.getElementById("readerBody").innerHTML=currentLesson.body;
- document.getElementById("saveMessage").textContent=saved?"Available offline on this device.":"Connect to internet to save this lesson.";
+ currentLesson=saved||makeLesson(grade,subject,chapter);
+ showLesson();
  if(navigator.onLine && !saved) await saveCurrent();
+}
+function showLesson(){
+ $("lessonTag").textContent=currentLesson.grade+" • "+currentLesson.subject;
+ $("lessonTitle").textContent=currentLesson.title;
+ $("lessonBody").innerHTML=currentLesson.body;
+ $("lessonStatus").textContent=currentLesson.savedAt?
+ "✓ Saved on this device for offline study.":
+ "Connect to the internet to save this lesson.";
+ show("reader");
 }
 async function saveCurrent(){
  if(!currentLesson)return;
- await saveLesson(currentLesson);
- document.getElementById("saveMessage").textContent="✓ Saved on this device for offline study.";
+ currentLesson.savedAt=Date.now();
+ await storeLesson(currentLesson);
+ $("lessonStatus").textContent="✓ Saved for offline study on this phone.";
+ updateProgress();
 }
-function backToCatalog(){openGrade(currentGrade)}
-function backToLessons(){openSubject(currentSubject)}
-async function renderSaved(){
- const list=await getSaved();
- document.getElementById("savedList").innerHTML=list.length?list.map(x=>
- `<div class="item"><strong>${x.title}</strong>
- <p class="muted">${x.grade} • ${x.subject}</p>
- <button onclick="openSavedLesson('${encodeURIComponent(x.id)}')">Open Offline</button></div>`
- ).join(""):"<p class='muted'>No lessons saved yet. Open a lesson while online to save it.</p>";
+async function savedPage(){
+ show("saved");
+ const list=await getAllSaved();
+ $("savedList").innerHTML=list.length?list.map((x,i)=>`
+ <div class="item">
+  <h3>${x.title}</h3>
+  <p>${x.grade} • ${x.subject}</p>
+  <button onclick="openSaved(${i})">Open Offline</button>
+ </div>`).join(""):"<p class='muted'>No saved lessons yet. Open a chapter while online.</p>";
+ window.savedCache=list;
 }
-async function openSavedLesson(encoded){
- const id=decodeURIComponent(encoded);
- currentLesson=(await getSaved()).find(x=>x.id===id);
- if(!currentLesson)return;
- hideAll();
- document.getElementById("reader").classList.remove("hidden");
- document.getElementById("readerTitle").textContent=currentLesson.title;
- document.getElementById("readerTag").textContent=currentLesson.grade+" • "+currentLesson.subject;
- document.getElementById("readerBody").innerHTML=currentLesson.body;
- document.getElementById("saveMessage").textContent="✓ Saved on this device.";
+window.savedCache=[];
+function openSaved(i){
+ currentLesson=window.savedCache[i];
+ showLesson();
 }
-function showEnglish(){
- currentGrade="English Academy";
- currentSubject="English";
- currentLessons=englishLevels;
- hideAll();
- document.getElementById("lessons").classList.remove("hidden");
- document.getElementById("lessonTitle").textContent="English Academy";
- document.getElementById("lessonList").innerHTML=englishLevels.map((level,i)=>
- `<div class="item"><strong>Level ${i+1}: ${level}</strong>
- <p class="muted">Grammar • Vocabulary • Reading • Writing • Speaking</p>
- <button onclick="openEnglish('${encodeURIComponent(level)}')">Explore Level</button></div>`
- ).join("");
+async function updateProgress(){
+ try{
+  const count=(await getAllSaved()).length;
+  $("progressCount").textContent=count+" lessons saved";
+  $("progressBar").style.width=Math.min(100,count/40*100)+"%";
+ }catch(e){}
 }
-function openEnglish(level){
- alert(level+" English course content will be added in the next content-building phase.");
+
+function englishPage(){
+ show("english");
+ $("englishList").innerHTML=englishLevels.map((x,i)=>`
+ <div class="item">
+  <div class="tag">LEVEL ${i+1}</div>
+  <h3>${x[0]}</h3>
+  <p>${x[1]}</p>
+  <button onclick="openEnglish(${i})">Open Level</button>
+ </div>`).join("");
+}
+function openEnglish(i){
+ grade="English Academy";
+ subject="English";
+ chapter=englishLevels[i][0];
+ const lesson={
+  id:"English|"+chapter,
+  grade:"English Academy",
+  subject:"English",
+  title:chapter,
+  body:`
+   <h3>Welcome to ${chapter}</h3>
+   <p>${englishLevels[i][1]}</p>
+   <h3>Your learning routine</h3>
+   <ol>
+    <li>Learn five new English words.</li>
+    <li>Study one grammar concept.</li>
+    <li>Read a short English passage.</li>
+    <li>Write five original sentences.</li>
+    <li>Practice speaking aloud.</li>
+   </ol>
+   <h3>Practice</h3>
+   <p>Introduce yourself in five simple English sentences.</p>
+   <p>Write down five words you learned today and use each in a sentence.</p>
+   <p><b>Remember:</b> Regular practice is more important than rushing through levels.</p>
+   <p>This is a starter lesson. Full exercises, explanations and level tests will be added in the content-building stage.</p>
+  `
+ };
+ currentLesson=lesson;
+ showLesson();
+ if(navigator.onLine)saveCurrent();
 }
 
 if("serviceWorker" in navigator){
- window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js"));
+ window.addEventListener("load",()=>{
+  navigator.serviceWorker.register("./sw.js").catch(err=>console.log(err));
+ });
 }
 init();
 </script>
