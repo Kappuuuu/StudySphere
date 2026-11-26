@@ -1,0 +1,11 @@
+
+{
+  "name": "StudySphere Learning",
+  "short_name": "StudySphere",
+  "description": "Sindh Board learning platform",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0c1020",
+  "theme_color": "#101323"
+}
