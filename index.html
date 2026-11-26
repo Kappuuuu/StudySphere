@@ -3,649 +3,319 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#0b1020">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101323">
 <title>StudySphere | Learn Without Limits</title>
-
+<link rel="manifest" href="manifest.json">
 <style>
-:root {
-  --bg:#0b1020;
-  --panel:#121b30;
-  --panel2:#1a2740;
-  --text:#f1f5ff;
-  --muted:#9eacc5;
-  --blue:#829fff;
-  --cyan:#5bd9d0;
-  --gold:#ffd078;
-  --border:#293956;
-}
+:root{--bg:#0c1020;--panel:#171d32;--panel2:#202943;--text:#f4f6ff;--muted:#a5aec6;--accent:#8b7cff;--green:#46d6a0}
 *{box-sizing:border-box}
-body{
-  margin:0;
-  font-family:Arial,sans-serif;
-  background:var(--bg);
-  color:var(--text);
-}
-button{cursor:pointer;font:inherit}
-.sidebar{
-  position:fixed;
-  left:0;top:0;bottom:0;
-  width:240px;
-  padding:25px 18px;
-  background:#0d1527;
-  border-right:1px solid var(--border);
-}
-.brand{
-  font-size:23px;
-  font-weight:bold;
-  margin:8px 5px 35px;
-}
-.brand span{color:var(--cyan)}
-.nav button{
-  display:block;
-  width:100%;
-  padding:13px;
-  margin:5px 0;
-  text-align:left;
-  border:0;
-  border-radius:10px;
-  color:var(--muted);
-  background:transparent;
-}
-.nav button:hover,.nav button.active{
-  background:var(--panel2);
-  color:white;
-}
-main{
-  margin-left:240px;
-  padding:30px;
-  max-width:1450px;
-}
-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:25px;
-}
-h1{font-size:30px;margin:5px 0}
-h2{font-size:22px}
-.muted{color:var(--muted)}
-.hero{
-  padding:35px;
-  border-radius:22px;
-  background:linear-gradient(120deg,#263f70,#174451);
-  border:1px solid #405c85;
-}
-.hero h2{font-size:36px;max-width:600px}
-.hero p{color:#d0dcef;max-width:550px;line-height:1.7}
-.btn{
-  padding:12px 18px;
-  border:0;
-  border-radius:10px;
-  background:var(--blue);
-  color:#071326;
-  font-weight:bold;
-}
-.btn.secondary{
-  background:var(--panel2);
-  color:white;
-  border:1px solid var(--border);
-}
-.grid{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:16px;
-}
-.card{
-  background:var(--panel);
-  border:1px solid var(--border);
-  border-radius:16px;
-  padding:20px;
-}
-.icon{font-size:35px}
-.tag{
-  display:inline-block;
-  padding:5px 10px;
-  border-radius:20px;
-  font-size:11px;
-  background:#21463e;
-  color:#9af0d4;
-}
-.premium-tag{
-  background:#4a3b20;
-  color:var(--gold);
-}
-.page{display:none}
-.page.active{display:block}
-.section-title{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin:30px 0 15px;
-}
-.lesson{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:12px;
-  background:var(--panel);
-  border:1px solid var(--border);
-  border-radius:12px;
-  padding:15px;
-  margin:10px 0;
-}
-.lesson small{color:var(--muted)}
-.price-card{
-  max-width:500px;
-  margin:25px auto;
-  text-align:center;
-  padding:30px;
-  background:linear-gradient(150deg,#1e3155,#121b30);
-  border:1px solid #50668c;
-  border-radius:20px;
-}
-.price{font-size:45px;font-weight:bold}
-.price small{font-size:15px;color:var(--muted)}
-ul{line-height:2;text-align:left}
-.field{margin:13px 0;text-align:left}
-.field label{display:block;margin-bottom:6px;color:var(--muted)}
-.field input,.field select{
-  width:100%;
-  padding:12px;
-  background:#0b1426;
-  color:white;
-  border:1px solid var(--border);
-  border-radius:9px;
-}
-.payment-box{
-  background:#0b1426;
-  border:1px solid var(--border);
-  padding:15px;
-  border-radius:12px;
-  margin:12px 0;
-  text-align:left;
-}
-.payment-box strong{display:block}
-.payment-box code{color:var(--cyan);font-size:17px}
-.notice{
-  background:#1b2c48;
-  padding:13px;
-  border-radius:10px;
-  color:#cbd8ee;
-  font-size:13px;
-  margin:15px 0;
-}
-.modal{
-  display:none;
-  position:fixed;
-  inset:0;
-  background:#000b;
-  z-index:5;
-  padding:20px;
-  overflow:auto;
-}
-.modal-content{
-  max-width:480px;
-  margin:30px auto;
-  padding:25px;
-  background:var(--panel);
-  border:1px solid var(--border);
-  border-radius:18px;
-}
-.close{
-  float:right;
-  background:none;
-  border:0;
-  color:white;
-  font-size:25px;
-}
-footer{
-  margin-top:45px;
-  padding:20px 0;
-  border-top:1px solid var(--border);
-  color:var(--muted);
-  font-size:12px;
-}
-@media(max-width:850px){
-  .sidebar{
-    position:relative;
-    width:100%;
-    height:auto;
-    padding:12px;
-  }
-  .brand{margin:5px 8px 12px}
-  .nav{display:flex;overflow-x:auto;gap:5px}
-  .nav button{white-space:nowrap;width:auto}
-  main{margin:0;padding:18px}
-  .grid{grid-template-columns:repeat(2,1fr)}
-}
-@media(max-width:550px){
-  .grid{grid-template-columns:1fr}
-  .hero{padding:22px}
-  .hero h2{font-size:27px}
-  header h1{font-size:23px}
-}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,sans-serif}
+header{padding:22px 18px;background:linear-gradient(135deg,#24244b,#151b32)}
+.brand{font-size:25px;font-weight:800;letter-spacing:.4px}
+.brand span{color:#a99cff}
+header p{color:#c0c5dc;margin:8px 0 0;font-size:13px}
+main{max-width:850px;margin:auto;padding:18px}
+h2{font-size:19px;margin:24px 0 12px}
+.muted{color:var(--muted);font-size:13px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.card{background:var(--panel);border:1px solid #29324c;border-radius:16px;padding:16px}
+.card h3{margin:8px 0;font-size:16px}
+.card p{color:var(--muted);font-size:12px;line-height:1.5}
+button{border:0;border-radius:11px;background:var(--accent);color:white;padding:11px 14px;font-weight:700;cursor:pointer}
+button.secondary{background:var(--panel2);border:1px solid #394461}
+button:disabled{opacity:.5}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
+input{width:100%;padding:14px;background:var(--panel);border:1px solid #394461;border-radius:12px;color:white;margin:10px 0}
+.item{background:var(--panel);padding:15px;border-radius:13px;margin:9px 0;border:1px solid #29324c}
+.item button{margin-top:9px}
+.hidden{display:none!important}
+.lesson-body{line-height:1.8;color:#dce2f5}
+.lesson-body h3{color:#b8adff}
+.tag{font-size:11px;color:var(--green)}
+footer{text-align:center;padding:30px;color:var(--muted);font-size:12px}
+nav{display:flex;gap:8px;overflow:auto;padding:12px 0}
+nav button{white-space:nowrap}
+@media(max-width:430px){main{padding:14px}.grid{gap:9px}.card{padding:12px}}
 </style>
 </head>
-
 <body>
-
-<aside class="sidebar">
-  <div class="brand">Study<span>Sphere</span></div>
-  <nav class="nav">
-    <button class="active" onclick="showPage('home',this)">⌂ Dashboard</button>
-    <button onclick="showPage('courses',this)">▤ Courses</button>
-    <button onclick="showPage('practice',this)">✎ Practice MCQs</button>
-    <button onclick="showPage('premium',this)">♛ Premium</button>
-    <button onclick="showPage('payments',this)">◈ Payments</button>
-    <button onclick="showPage('support',this)">? Support</button>
-  </nav>
-</aside>
-
-<main>
-
 <header>
-  <div>
-    <div class="muted">YOUR LEARNING JOURNEY</div>
-    <h1 id="heading">Welcome to StudySphere 👋</h1>
-    <div class="muted">Learn. Practice. Improve.</div>
-  </div>
-  <div>🎓 Student</div>
+  <div class="brand">Study<span>Sphere</span> ✦</div>
+  <p>Learn Without Limits • Sindh Board • Class 9–12</p>
 </header>
 
-<!-- HOME -->
-
-<section class="page active" id="home">
-
-<div class="hero">
-  <div class="tag">LEARN • PRACTICE • GROW</div>
-  <h2>Build Your Future One Lesson At A Time.</h2>
-  <p>
-    Explore science subjects, strengthen your concepts
-    and prepare for your academic goals with StudySphere.
-  </p>
-  <button class="btn" onclick="showPage('courses')">
-    Explore Courses →
-  </button>
-</div>
-
-<div class="section-title">
-  <h2>Your Subjects</h2>
-</div>
-
-<div class="grid">
-
-<div class="card">
-  <div class="icon">⚛️</div>
-  <span class="tag">FREE STARTER</span>
-  <h3>Physics</h3>
-  <p class="muted">Understand matter, measurement and motion.</p>
-  <button class="btn secondary" onclick="openCourse('Physics')">Open Course</button>
-</div>
-
-<div class="card">
-  <div class="icon">🧪</div>
-  <span class="tag">FREE STARTER</span>
-  <h3>Chemistry</h3>
-  <p class="muted">Explore atoms, elements and reactions.</p>
-  <button class="btn secondary" onclick="openCourse('Chemistry')">Open Course</button>
-</div>
-
-<div class="card">
-  <div class="icon">🧬</div>
-  <span class="tag">FREE STARTER</span>
-  <h3>Biology</h3>
-  <p class="muted">Discover cells and the living world.</p>
-  <button class="btn secondary" onclick="openCourse('Biology')">Open Course</button>
-</div>
-
-</div>
-
-<div class="notice">
-  StudySphere offers basic learning resources for free.
-  Premium resources require an active subscription.
-</div>
-
-</section>
-
-<!-- COURSES -->
-
-<section class="page" id="courses">
-<h2>Explore Courses</h2>
-<div class="grid">
-
-<div class="card">
-  <div class="icon">⚛️</div>
-  <h3>Physics</h3>
-  <p class="muted">Measurements, motion, force and energy.</p>
-  <button class="btn" onclick="openCourse('Physics')">View Lessons</button>
-</div>
-
-<div class="card">
-  <div class="icon">🧪</div>
-  <h3>Chemistry</h3>
-  <p class="muted">Matter, atoms and chemical bonding.</p>
-  <button class="btn" onclick="openCourse('Chemistry')">View Lessons</button>
-</div>
-
-<div class="card">
-  <div class="icon">🧬</div>
-  <h3>Biology</h3>
-  <p class="muted">Cells, genetics and human biology.</p>
-  <button class="btn" onclick="openCourse('Biology')">View Lessons</button>
-</div>
-
-</div>
-</section>
-
-<!-- COURSE DETAILS -->
-
-<section class="page" id="courseDetail">
-<button class="btn secondary" onclick="showPage('courses')">← Back</button>
-<h2 id="courseTitle">Lessons</h2>
-<div id="lessonList"></div>
-</section>
-
-<!-- PRACTICE -->
-
-<section class="page" id="practice">
-<h2>Practice & MCQs</h2>
-<div class="card">
-  <h3>Sample Physics Question</h3>
-  <p>Which unit is used to measure force?</p>
-
-  <label><input type="radio" name="answer" value="A"> Joule</label><br><br>
-  <label><input type="radio" name="answer" value="B"> Newton</label><br><br>
-  <label><input type="radio" name="answer" value="C"> Watt</label><br><br>
-
-  <button class="btn" onclick="checkAnswer()">Check Answer</button>
-  <p id="result"></p>
-</div>
-</section>
-
-<!-- PREMIUM -->
-
-<section class="page" id="premium">
-
-<div class="price-card">
-  <div class="tag premium-tag">STUDYSPHERE PREMIUM</div>
-  <h2>Unlock Your Learning</h2>
-
-  <div class="price">
-    Rs. 200
-    <small>/ 30 Days</small>
+<main>
+  <div class="actions">
+    <button onclick="showHome()">Home</button>
+    <button class="secondary" onclick="showSaved()">Saved for Offline</button>
   </div>
 
-  <ul>
-    <li>Premium chapter lessons</li>
-    <li>Detailed study notes</li>
-    <li>Additional MCQs</li>
-    <li>Extra learning resources</li>
-    <li>30 days access after approval</li>
-  </ul>
+  <div id="status" class="muted">Checking connection...</div>
 
-  <button class="btn" onclick="openPayment()">
-    Get Premium Access
-  </button>
+  <section id="home">
+    <h2>Welcome to your learning space 👋</h2>
+    <p class="muted">Choose your class and start learning at your own pace.</p>
+    <div class="grid" id="grades"></div>
 
-  <p class="muted">
-    Payments are manually verified by the administrator.
-  </p>
-</div>
+    <h2>English Academy</h2>
+    <div class="card">
+      <h3>English: Beginner to Advanced</h3>
+      <p>Grammar, vocabulary, reading, writing, listening, speaking and pronunciation.</p>
+      <button onclick="showEnglish()">Explore English</button>
+    </div>
+  </section>
 
-</section>
+  <section id="catalog" class="hidden">
+    <div class="actions"><button class="secondary" onclick="showHome()">← Back</button></div>
+    <h2 id="catalogTitle">Courses</h2>
+    <div id="subjects" class="grid"></div>
+  </section>
 
-<!-- PAYMENTS -->
+  <section id="lessons" class="hidden">
+    <div class="actions"><button class="secondary" onclick="backToCatalog()">← Back</button></div>
+    <h2 id="lessonTitle">Lessons</h2>
+    <div id="lessonList"></div>
+  </section>
 
-<section class="page" id="payments">
-<h2>Payment Information</h2>
-<div class="card">
-  <h3>Subscription Plan</h3>
-  <p>Rs. 200 for 30 days</p>
-  <button class="btn" onclick="openPayment()">Submit Payment Request</button>
-  <div class="notice">
-    Payment history and request tracking will be enabled
-    after secure database integration.
-  </div>
-</div>
-</section>
+  <section id="reader" class="hidden">
+    <div class="actions">
+      <button class="secondary" onclick="backToLessons()">← Lessons</button>
+      <button onclick="saveCurrent()">Save for Offline ↓</button>
+    </div>
+    <div class="card">
+      <div class="tag" id="readerTag">LESSON</div>
+      <h2 id="readerTitle"></h2>
+      <div id="readerBody" class="lesson-body"></div>
+      <p class="muted" id="saveMessage"></p>
+    </div>
+  </section>
 
-<!-- SUPPORT -->
-
-<section class="page" id="support">
-<h2>Help & Support</h2>
-<div class="card">
-  <h3>Need Help?</h3>
-  <p class="muted">
-    Contact StudySphere support for assistance with courses
-    and subscriptions.
-  </p>
-  <div class="notice">
-    Official WhatsApp support number will be added here.
-  </div>
-</div>
-</section>
-
-<footer>
-  © 2026 StudySphere. All rights reserved.
-  <br>Learn with curiosity. Grow with confidence.
-</footer>
-
+  <section id="saved" class="hidden">
+    <h2>Saved for Offline</h2>
+    <p class="muted">Lessons you've opened and saved on this device.</p>
+    <div id="savedList"></div>
+  </section>
 </main>
 
-<!-- PAYMENT MODAL -->
-
-<div class="modal" id="paymentModal">
-<div class="modal-content">
-
-<button class="close" onclick="closePayment()">×</button>
-
-<h2>Premium Payment</h2>
-<p class="muted">Rs. 200 / 30 Days</p>
-
-<div class="field">
-<label>Choose Payment Method</label>
-<select id="method" onchange="updateDetails()">
-<option value="Easypaisa">Easypaisa</option>
-<option value="JazzCash">JazzCash</option>
-</select>
-</div>
-
-<div class="payment-box" id="paymentDetails">
-<strong>Easypaisa</strong>
-<code>03329921682</code>
-<p>Account title: dheli</p>
-</div>
-
-<div class="notice">
-Confirm the account title before transferring money.
-Never share your PIN or OTP.
-</div>
-
-<form id="paymentForm">
-
-<div class="field">
-<label>Student Name</label>
-<input id="studentName" required>
-</div>
-
-<div class="field">
-<label>Transaction ID</label>
-<input id="transactionId" required>
-</div>
-
-<button class="btn" type="submit">Submit Demo Request</button>
-
-</form>
-
-<p class="muted">
-Demo form only. Real payment verification and admin
-approval require backend integration.
-</p>
-
-</div>
-</div>
+<footer>StudySphere • Keep learning, keep growing.</footer>
 
 <script>
+const subjects=["Physics","Chemistry","Biology"];
+const grades=["9th Class","10th Class","11th Class","12th Class"];
+const englishLevels=["Foundation","Beginner","Intermediate","Upper Intermediate","Advanced"];
 
-const courseData = {
-
-Physics:[
-["Introduction to Physics","FREE"],
-["Matter and its States","FREE"],
-["Measurement and Physical Quantities","FREE"],
-["Motion and Speed","PREMIUM"],
-["Force and Newton's Laws","PREMIUM"]
-],
-
-Chemistry:[
-["Introduction to Chemistry","FREE"],
-["Matter and Classification","FREE"],
-["Atoms and Elements","FREE"],
-["Periodic Table","PREMIUM"],
-["Chemical Bonding","PREMIUM"]
-],
-
-Biology:[
-["Introduction to Biology","FREE"],
-["Characteristics of Living Things","FREE"],
-["Cell: Basic Unit of Life","FREE"],
-["Biological Molecules","PREMIUM"],
-["Cell Division","PREMIUM"]
-]
-
+const courseData={
+ "9th Class":{
+  Physics:["Physical Quantities and Measurement","Kinematics","Dynamics","Turning Effect of Forces"],
+  Chemistry:["Fundamentals of Chemistry","Structure of Atom","Periodic Table","Chemical Bonding"],
+  Biology:["Introduction to Biology","Solving a Biological Problem","Biodiversity","Cells and Tissues"]
+ },
+ "10th Class":{
+  Physics:["Simple Harmonic Motion","Sound","Geometrical Optics","Electrostatics"],
+  Chemistry:["Chemical Equilibrium","Acids, Bases and Salts","Organic Chemistry","Chemical Industries"],
+  Biology:["Gaseous Exchange","Homeostasis","Coordination and Control","Reproduction"]
+ },
+ "11th Class":{
+  Physics:["Measurements","Vectors and Equilibrium","Motion and Force","Work and Energy"],
+  Chemistry:["Basic Concepts","Experimental Techniques","Gases","Liquids and Solids"],
+  Biology:["Cell Biology","Biological Molecules","Enzymes","Bioenergetics"]
+ },
+ "12th Class":{
+  Physics:["Electrostatics","Current Electricity","Electromagnetism","Electronics"],
+  Chemistry:["Chemical Equilibrium","Electrochemistry","Reaction Kinetics","Organic Compounds"],
+  Biology:["Support and Movement","Coordination and Control","Reproduction","Genetics"]
+ }
 };
 
-function showPage(id,button){
-
-document.querySelectorAll(".page").forEach(page=>{
-page.classList.remove("active");
-});
-
-document.getElementById(id).classList.add("active");
-
-document.querySelectorAll(".nav button").forEach(btn=>{
-btn.classList.remove("active");
-});
-
-if(button) button.classList.add("active");
-
-const titles={
-home:"Welcome to StudySphere 👋",
-courses:"Explore Courses",
-courseDetail:"Course Lessons",
-practice:"Practice & MCQs",
-premium:"StudySphere Premium",
-payments:"My Payments",
-support:"Help & Support"
+const sampleLessons={
+ "Physical Quantities and Measurement":{
+  title:"Introduction to Physical Quantities",
+  body:`<h3>What is Physics?</h3>
+  <p>Physics is the branch of science that studies matter, energy, motion and the laws of nature.</p>
+  <h3>Physical Quantity</h3>
+  <p>A physical quantity is a property that can be measured, such as length, mass, time or temperature.</p>
+  <h3>Examples</h3>
+  <ul><li>Length — metre (m)</li><li>Mass — kilogram (kg)</li><li>Time — second (s)</li></ul>
+  <h3>Remember</h3><p>A measurement is written with a number and a unit.</p>`
+ },
+ "Fundamentals of Chemistry":{
+  title:"Introduction to Chemistry",
+  body:`<h3>What is Chemistry?</h3>
+  <p>Chemistry is the study of matter, its composition, properties and the changes it undergoes.</p>
+  <h3>Matter</h3><p>Matter is anything that has mass and occupies space.</p>
+  <h3>States of Matter</h3><ul><li>Solid</li><li>Liquid</li><li>Gas</li></ul>`
+ },
+ "Introduction to Biology":{
+  title:"Introduction to Biology",
+  body:`<h3>What is Biology?</h3>
+  <p>Biology is the scientific study of living organisms.</p>
+  <h3>Branches of Biology</h3><ul><li>Botany — study of plants</li><li>Zoology — study of animals</li><li>Microbiology — study of microorganisms</li></ul>`
+ }
 };
 
-document.getElementById("heading").textContent=titles[id]||"StudySphere";
+let current={};
+let currentGrade="";
+let currentSubject="";
+let currentLessons=[];
+let currentLesson=null;
 
-window.scrollTo(0,0);
-}
-
-function openCourse(name){
-
-document.getElementById("courseTitle").textContent=name;
-
-const list=document.getElementById("lessonList");
-
-list.innerHTML="";
-
-courseData[name].forEach((lesson,index)=>{
-
-const isFree=lesson[1]==="FREE";
-
-const div=document.createElement("div");
-div.className="lesson";
-
-const title=document.createElement("div");
-title.innerHTML="<b>"+(index+1)+". "+lesson[0]+"</b><br><small>"+lesson[1]+"</small>";
-
-const button=document.createElement("button");
-button.className="btn "+(isFree?"secondary":"");
-button.textContent=isFree?"Open":"Premium";
-
-button.onclick=()=>{
-if(isFree){
-alert("Lesson content will be added in the next development phase.");
-}else{
-showPage("premium");
-}
-};
-
-div.appendChild(title);
-div.appendChild(button);
-list.appendChild(div);
-
+const dbPromise=new Promise((resolve,reject)=>{
+ const request=indexedDB.open("StudySphereOffline",1);
+ request.onupgradeneeded=()=>{
+  const db=request.result;
+  if(!db.objectStoreNames.contains("lessons"))
+   db.createObjectStore("lessons",{keyPath:"id"});
+ };
+ request.onsuccess=()=>resolve(request.result);
+ request.onerror=()=>reject(request.error);
 });
 
-showPage("courseDetail");
-
+async function saveLesson(lesson){
+ const db=await dbPromise;
+ return new Promise((resolve,reject)=>{
+  const tx=db.transaction("lessons","readwrite");
+  tx.objectStore("lessons").put(lesson);
+  tx.oncomplete=()=>resolve(true);
+  tx.onerror=()=>reject(tx.error);
+ });
 }
 
-function checkAnswer(){
-
-const selected=document.querySelector('input[name="answer"]:checked');
-
-if(!selected){
-document.getElementById("result").textContent="Select an answer first.";
-return;
+async function getSaved(){
+ const db=await dbPromise;
+ return new Promise((resolve,reject)=>{
+  const tx=db.transaction("lessons","readonly");
+  const req=tx.objectStore("lessons").getAll();
+  req.onsuccess=()=>resolve(req.result);
+  req.onerror=()=>reject(req.error);
+ });
 }
 
-document.getElementById("result").textContent=
-selected.value==="B"
-?"Correct! Force is measured in Newtons."
-:"Incorrect. Correct answer: Newton.";
+function hideAll(){
+ ["home","catalog","lessons","reader","saved"].forEach(id=>
+  document.getElementById(id).classList.add("hidden"));
+}
+function showHome(){hideAll();document.getElementById("home").classList.remove("hidden")}
+function showSaved(){hideAll();document.getElementById("saved").classList.remove("hidden");renderSaved()}
 
+function init(){
+ document.getElementById("grades").innerHTML=grades.map(g=>
+ `<div class="card"><div>📚</div><h3>${g}</h3>
+ <p>Physics • Chemistry • Biology</p>
+ <button onclick="openGrade('${g}')">Explore Class</button></div>`
+ ).join("");
+ updateStatus();
+}
+function updateStatus(){
+ const online=navigator.onLine;
+ document.getElementById("status").textContent=online?
+ "🟢 Online — new lessons can be opened and saved.":
+ "🟠 Offline — only saved lessons are available.";
+}
+window.addEventListener("online",updateStatus);
+window.addEventListener("offline",updateStatus);
+
+function openGrade(grade){
+ currentGrade=grade;
+ hideAll();
+ document.getElementById("catalog").classList.remove("hidden");
+ document.getElementById("catalogTitle").textContent=grade+" Subjects";
+ document.getElementById("subjects").innerHTML=subjects.map(s=>
+ `<div class="card"><h3>${s}</h3><p>Chapter-wise study material</p>
+ <button onclick="openSubject('${s}')">Open Subject</button></div>`
+ ).join("");
+}
+function openSubject(subject){
+ currentSubject=subject;
+ currentLessons=courseData[currentGrade][subject]||[];
+ hideAll();
+ document.getElementById("lessons").classList.remove("hidden");
+ document.getElementById("lessonTitle").textContent=currentGrade+" • "+subject;
+ renderLessons();
+}
+async function renderLessons(){
+ const saved=await getSaved();
+ const savedIds=new Set(saved.map(x=>x.id));
+ document.getElementById("lessonList").innerHTML=currentLessons.map((name,i)=>{
+  const id=currentGrade+"|"+currentSubject+"|"+name;
+  return `<div class="item"><strong>${i+1}. ${name}</strong>
+  <p class="muted">${savedIds.has(id)?"✓ Saved for offline":"Internet required for first opening"}</p>
+  <button onclick="openLesson('${encodeURIComponent(name)}')">Open Lesson</button></div>`;
+ }).join("");
+}
+async function openLesson(encoded){
+ const name=decodeURIComponent(encoded);
+ const id=currentGrade+"|"+currentSubject+"|"+name;
+ let saved=(await getSaved()).find(x=>x.id===id);
+ if(!navigator.onLine && !saved){
+  alert("This chapter has not been saved yet. Connect to the internet to open it.");
+  return;
+ }
+ const sample=sampleLessons[name];
+ if(!saved && !sample){
+  alert("This sample version does not yet contain this lesson. Full chapter content will be added through the course system.");
+  return;
+ }
+ currentLesson=saved||{
+  id,grade:currentGrade,subject:currentSubject,
+  title:sample.title,chapter:name,body:sample.body,
+  savedAt:Date.now()
+ };
+ hideAll();
+ document.getElementById("reader").classList.remove("hidden");
+ document.getElementById("readerTitle").textContent=currentLesson.title;
+ document.getElementById("readerTag").textContent=currentLesson.grade+" • "+currentLesson.subject;
+ document.getElementById("readerBody").innerHTML=currentLesson.body;
+ document.getElementById("saveMessage").textContent=saved?"Available offline on this device.":"Connect to internet to save this lesson.";
+ if(navigator.onLine && !saved) await saveCurrent();
+}
+async function saveCurrent(){
+ if(!currentLesson)return;
+ await saveLesson(currentLesson);
+ document.getElementById("saveMessage").textContent="✓ Saved on this device for offline study.";
+}
+function backToCatalog(){openGrade(currentGrade)}
+function backToLessons(){openSubject(currentSubject)}
+async function renderSaved(){
+ const list=await getSaved();
+ document.getElementById("savedList").innerHTML=list.length?list.map(x=>
+ `<div class="item"><strong>${x.title}</strong>
+ <p class="muted">${x.grade} • ${x.subject}</p>
+ <button onclick="openSavedLesson('${encodeURIComponent(x.id)}')">Open Offline</button></div>`
+ ).join(""):"<p class='muted'>No lessons saved yet. Open a lesson while online to save it.</p>";
+}
+async function openSavedLesson(encoded){
+ const id=decodeURIComponent(encoded);
+ currentLesson=(await getSaved()).find(x=>x.id===id);
+ if(!currentLesson)return;
+ hideAll();
+ document.getElementById("reader").classList.remove("hidden");
+ document.getElementById("readerTitle").textContent=currentLesson.title;
+ document.getElementById("readerTag").textContent=currentLesson.grade+" • "+currentLesson.subject;
+ document.getElementById("readerBody").innerHTML=currentLesson.body;
+ document.getElementById("saveMessage").textContent="✓ Saved on this device.";
+}
+function showEnglish(){
+ currentGrade="English Academy";
+ currentSubject="English";
+ currentLessons=englishLevels;
+ hideAll();
+ document.getElementById("lessons").classList.remove("hidden");
+ document.getElementById("lessonTitle").textContent="English Academy";
+ document.getElementById("lessonList").innerHTML=englishLevels.map((level,i)=>
+ `<div class="item"><strong>Level ${i+1}: ${level}</strong>
+ <p class="muted">Grammar • Vocabulary • Reading • Writing • Speaking</p>
+ <button onclick="openEnglish('${encodeURIComponent(level)}')">Explore Level</button></div>`
+ ).join("");
+}
+function openEnglish(level){
+ alert(level+" English course content will be added in the next content-building phase.");
 }
 
-function openPayment(){
-document.getElementById("paymentModal").style.display="block";
+if("serviceWorker" in navigator){
+ window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js"));
 }
-
-function closePayment(){
-document.getElementById("paymentModal").style.display="none";
-}
-
-function updateDetails(){
-
-const method=document.getElementById("method").value;
-
-const details=document.getElementById("paymentDetails");
-
-if(method==="Easypaisa"){
-
-details.innerHTML=
-"<strong>Easypaisa</strong>"+
-"<code>03329921682</code>"+
-"<p>Account title: dheli</p>";
-
-}else{
-
-details.innerHTML=
-"<strong>JazzCash</strong>"+
-"<code>03171059362</code>"+
-"<p>Account title: aisardas</p>";
-
-}
-
-}
-
-document.getElementById("paymentForm").addEventListener("submit",function(e){
-
-e.preventDefault();
-
-alert("Demo only: No payment request was sent or verified.");
-
-closePayment();
-this.reset();
-
-});
-
+init();
 </script>
-
 </body>
-  </html>
-    
+</html>
