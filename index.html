@@ -3,34 +3,35 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#10172b">
-<title>StudySphere | Learn Without Limits</title>
+<title>StudySphere 2.0 | Learn Without Limits</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-:root{--bg:#0b1020;--panel:#141d32;--panel2:#1b2944;--line:#2b3b59;--txt:#eef3ff;--muted:#a5b2ca;--blue:#8aa7ff;--cyan:#65dfd2;--gold:#ffd27a}
+:root{--bg:#0b1020;--panel:#141d32;--panel2:#1b2944;--line:#2b3b59;--txt:#eef3ff;--muted:#a5b2ca;--blue:#8aa7ff;--cyan:#65dfd2;--gold:#ffd27a;--red:#ff8585}
 *{box-sizing:border-box}
-body{margin:0;background:radial-gradient(ellipse at 85% 0,#20335b 0,transparent 38%),var(--bg);color:var(--txt);font:15px/1.55 system-ui,Arial,sans-serif}
-button,input,select{font:inherit}
+body{margin:0;background:radial-gradient(ellipse at 85% 0,#20335b 0,transparent 38%),var(--bg);color:var(--txt);font:15px/1.6 system-ui,Arial}
+button,input,select,textarea{font:inherit}
 button{cursor:pointer;border:0}
-.app{max-width:1250px;margin:auto;padding:18px}
+.app{max-width:1250px;margin:auto;padding:15px}
 header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 2px 20px}
-.brand{display:flex;align-items:center;gap:10px;font-weight:850;font-size:21px}
-.logo{width:40px;height:40px;border-radius:13px;background:linear-gradient(135deg,var(--blue),var(--cyan));display:grid;place-items:center;color:#10172b;font-weight:950}
-.header-right{color:var(--muted);font-size:13px}
-nav{display:flex;gap:7px;overflow:auto;padding:8px;background:#10182a;border:1px solid var(--line);border-radius:15px;margin-bottom:18px}
-nav button{white-space:nowrap;background:transparent;color:var(--muted);padding:10px 14px;border-radius:10px;font-weight:700}
+.brand{display:flex;align-items:center;gap:10px;font-weight:900;font-size:22px}
+.logo{width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,var(--blue),var(--cyan));display:grid;place-items:center;color:#10172b;font-weight:950}
+.header-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+nav{display:flex;gap:6px;overflow:auto;padding:8px;background:#10182a;border:1px solid var(--line);border-radius:15px;margin-bottom:18px}
+nav button{white-space:nowrap;background:transparent;color:var(--muted);padding:10px 13px;border-radius:10px;font-weight:700}
 nav button.active,nav button:hover{background:var(--panel2);color:white}
-main{min-height:65vh}
-.view{display:none}
-.view.active{display:block}
+.view{display:none}.view.active{display:block}
 .hero{padding:28px;border-radius:22px;border:1px solid #405783;background:linear-gradient(120deg,#263f70,#18364a);display:flex;justify-content:space-between;align-items:center;gap:18px}
-.hero h1{font-size:clamp(26px,5vw,40px);line-height:1.12;margin:7px 0 12px}
-.hero p{color:#d0dcef;max-width:620px;margin:0 0 18px}
-.hero-icon{font-size:72px}
+.hero h1{font-size:clamp(27px,5vw,42px);line-height:1.12;margin:7px 0 12px}
+.hero p{color:#d0dcef;max-width:650px}
+.hero-icon{font-size:70px}
 .kicker{font-size:11px;letter-spacing:1.6px;text-transform:uppercase;color:var(--cyan);font-weight:800}
 .btn{background:linear-gradient(135deg,var(--blue),#a5baff);color:#10172b;padding:10px 15px;border-radius:11px;font-weight:800}
 .btn.secondary{background:var(--panel2);color:var(--txt);border:1px solid var(--line)}
 .btn.gold{background:linear-gradient(135deg,#f6c76f,#ffe1a2)}
+.btn.danger{background:#482a3b;color:#ffd5df;border:1px solid #704057}
+.btn:disabled{opacity:.5;cursor:not-allowed}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:15px 0 24px}
 .stat,.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:17px}
 .stat strong{display:block;font-size:25px}
@@ -40,314 +41,519 @@ main{min-height:65vh}
 .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
 .subject{padding:0;overflow:hidden}
 .subject-top{height:90px;display:grid;place-items:center;font-size:40px;background:linear-gradient(135deg,#293e70,#205c68)}
-.subject:nth-child(2) .subject-top{background:linear-gradient(135deg,#553d77,#965779)}
-.subject:nth-child(3) .subject-top{background:linear-gradient(135deg,#315e4b,#87994d)}
 .subject-body{padding:15px}
 .subject h3{margin:0 0 4px}
 .subject p{margin:0 0 12px;color:var(--muted);font-size:13px}
 .chip{background:#20364d;color:#bce9e2;padding:5px 9px;border-radius:30px;font-size:12px;display:inline-block;margin:3px}
 .list{display:grid;gap:10px}
 .item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px;background:var(--panel);border:1px solid var(--line);border-radius:13px}
-.item strong{display:block}
-.item small{color:var(--muted)}
+.item strong{display:block}.item small{color:var(--muted)}
 .item-actions{display:flex;gap:7px;flex-wrap:wrap}
 .lesson-content{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px;margin-top:14px}
-.lesson-content h2{margin-top:0}
-.lesson-content h3{color:var(--cyan)}
+.lesson-content h2{margin-top:0}.lesson-content h3{color:var(--cyan)}
 .lesson-content p{color:#d6dfef}
+.lesson-content li{margin:7px 0;color:#d6dfef}
 .field{display:grid;gap:6px;margin:12px 0}
-.field input,.field select{width:100%;padding:12px;border-radius:10px;border:1px solid var(--line);background:#0d1527;color:var(--txt)}
+.field input,.field select,.field textarea{width:100%;padding:12px;border-radius:10px;border:1px solid var(--line);background:#0d1527;color:var(--txt)}
+.field textarea{min-height:100px;resize:vertical}
 .notice{background:#1c2b46;border:1px solid #3b5278;border-radius:12px;padding:13px;color:#d0dcef;font-size:13px;margin:13px 0}
 .price{font-size:43px;font-weight:900}
 .price small{font-size:14px;color:var(--muted);font-weight:500}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.row>*{flex:1}
+.search{max-width:100%;padding:12px;border-radius:10px;border:1px solid var(--line);background:#0d1527;color:white;width:100%}
+.progress{height:8px;background:#26334d;border-radius:20px;overflow:hidden;margin:8px 0}
+.progress span{display:block;height:100%;background:linear-gradient(90deg,var(--blue),var(--cyan));width:0}
 footer{padding:25px 4px;color:#8594af;font-size:12px;border-top:1px solid var(--line);margin-top:30px}
+#toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#263b5d;color:white;padding:12px 18px;border-radius:12px;display:none;z-index:20;max-width:90%;box-shadow:0 8px 30px #0008}
 @media(max-width:750px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.hero-icon{font-size:48px}.app{padding:12px}}
-@media(max-width:520px){.grid,.stats{grid-template-columns:1fr}.hero{padding:20px}.hero-icon{display:none}.item{align-items:flex-start;flex-direction:column}.item-actions{width:100%}}
+@media(max-width:520px){.grid,.stats{grid-template-columns:1fr}.hero{padding:20px}.hero-icon{display:none}.item{align-items:flex-start;flex-direction:column}.item-actions{width:100%}.header-right{font-size:11px}}
 </style>
 </head>
 <body>
 <div class="app">
 <header>
-<div class="brand"><div class="logo">S</div>StudySphere</div>
-<div class="header-right">Learn • Practice • Grow</div>
+ <div class="brand"><div class="logo">S</div>StudySphere</div>
+ <div class="header-right">
+  <span id="userLabel" class="muted">Guest learner</span>
+  <button class="btn secondary" id="authButton" onclick="showView('account')">Login / Signup</button>
+ </div>
 </header>
 
 <nav id="nav">
-<button class="active" data-view="home">⌂ Home</button>
-<button data-view="science">📚 Science</button>
-<button data-view="english">🔤 English Academy</button>
-<button data-view="saved">⬇ Saved Offline</button>
-<button data-view="premium">♛ Premium</button>
+ <button class="active" data-view="home">⌂ Home</button>
+ <button data-view="science">📚 Science</button>
+ <button data-view="library">🌐 Study Library</button>
+ <button data-view="english">🔤 English Academy</button>
+ <button data-view="saved">⬇ Offline</button>
+ <button data-view="progress">📈 Progress</button>
+ <button data-view="premium">♛ Premium</button>
+ <button data-view="account">👤 Account</button>
+ <button id="adminNav" data-view="admin" style="display:none">⚙ Admin</button>
 </nav>
 
 <main>
 <section class="view active" id="home">
-<div class="hero">
-<div>
-<div class="kicker">Your learning journey</div>
-<h1>Build your future, one lesson at a time.</h1>
-<p>Study Sindh Board Physics, Chemistry and Biology from Class 9 to 12, and improve your English from beginner to advanced.</p>
-<button class="btn" onclick="showView('science')">Explore subjects →</button>
-</div>
-<div class="hero-icon">📚</div>
-</div>
-
-<div class="stats">
-<div class="stat"><span class="muted">Science subjects</span><strong>3</strong><small class="muted">Physics • Chemistry • Biology</small></div>
-<div class="stat"><span class="muted">Classes</span><strong>9–12</strong><small class="muted">Sindh Board pathway</small></div>
-<div class="stat"><span class="muted">Offline saves</span><strong id="savedCount">0</strong><small class="muted">On this device</small></div>
-</div>
-
-<div class="section-title"><h2>Start learning</h2></div>
-<div class="grid">
-<div class="card subject"><div class="subject-top">⚛️</div><div class="subject-body"><h3>Physics</h3><p>Measurements, motion, force and energy.</p><button class="btn secondary" onclick="openSubject('Physics')">Open Physics</button></div></div>
-<div class="card subject"><div class="subject-top">🧪</div><div class="subject-body"><h3>Chemistry</h3><p>Atoms, matter, bonding and reactions.</p><button class="btn secondary" onclick="openSubject('Chemistry')">Open Chemistry</button></div></div>
-<div class="card subject"><div class="subject-top">🧬</div><div class="subject-body"><h3>Biology</h3><p>Cells, life processes and organisms.</p><button class="btn secondary" onclick="openSubject('Biology')">Open Biology</button></div></div>
-</div>
+ <div class="hero">
+  <div>
+   <div class="kicker">Your learning journey</div>
+   <h1>Build your future, one lesson at a time.</h1>
+   <p>Explore Science, English, concepts, practice questions and new learning topics. Keep learning and keep growing.</p>
+   <button class="btn" onclick="showView('science')">Start learning →</button>
+  </div>
+  <div class="hero-icon">📚</div>
+ </div>
+ <div class="stats">
+  <div class="stat"><span class="muted">Science subjects</span><strong>3</strong><small class="muted">Physics • Chemistry • Biology</small></div>
+  <div class="stat"><span class="muted">Classes</span><strong>9–12</strong><small class="muted">School learning pathway</small></div>
+  <div class="stat"><span class="muted">Saved lessons</span><strong id="savedCount">0</strong><small class="muted">On this device</small></div>
+ </div>
+ <div class="section-title"><h2>Continue learning</h2></div>
+ <div class="grid">
+  <article class="card subject"><div class="subject-top">⚛️</div><div class="subject-body"><h3>Physics</h3><p>Motion, energy, electricity and more.</p><button class="btn secondary" onclick="openSubject('Physics')">Open Physics</button></div></article>
+  <article class="card subject"><div class="subject-top">🧪</div><div class="subject-body"><h3>Chemistry</h3><p>Atoms, bonding, reactions and matter.</p><button class="btn secondary" onclick="openSubject('Chemistry')">Open Chemistry</button></div></article>
+  <article class="card subject"><div class="subject-top">🧬</div><div class="subject-body"><h3>Biology</h3><p>Cells, organisms and life processes.</p><button class="btn secondary" onclick="openSubject('Biology')">Open Biology</button></div></article>
+ </div>
+ <div class="section-title"><h2>Explore the full library</h2><button class="btn secondary" onclick="showView('library')">Browse all →</button></div>
+ <div class="notice">StudySphere is designed as an expandable learning library. New original lessons and topics can be added as the syllabus grows.</div>
 </section>
 
 <section class="view" id="science">
-<div class="section-title"><h2>Science courses</h2><span class="muted">Select class and subject</span></div>
-<div class="field">
-<label for="grade">Choose class</label>
-<select id="grade" onchange="renderSubjects()">
-<option value="9">Class 9</option>
-<option value="10">Class 10</option>
-<option value="11">Class 11</option>
-<option value="12">Class 12</option>
-</select>
-</div>
-<div class="grid" id="subjectGrid"></div>
+ <div class="section-title"><h2>Science courses</h2><span class="muted">Class 9–12</span></div>
+ <div class="field"><label for="grade">Choose class</label>
+  <select id="grade" onchange="renderSubjects()"><option value="9">Class 9</option><option value="10">Class 10</option><option value="11">Class 11</option><option value="12">Class 12</option></select>
+ </div>
+ <div class="grid" id="subjectGrid"></div>
 </section>
 
 <section class="view" id="chapters">
-<div class="section-title"><h2 id="chapterHeading">Chapters</h2><button class="btn secondary" onclick="showView('science')">← Back</button></div>
-<div class="list" id="chapterList"></div>
+ <div class="section-title"><h2 id="chapterHeading">Chapters</h2><button class="btn secondary" onclick="showView('science')">← Back</button></div>
+ <input class="search" id="chapterSearch" placeholder="Search chapters..." oninput="filterChapters()">
+ <div class="list" id="chapterList" style="margin-top:12px"></div>
 </section>
 
 <section class="view" id="reader">
-<div class="section-title"><h2 id="readerTitle">Lesson</h2><button class="btn secondary" onclick="showView('chapters')">← Chapters</button></div>
-<div class="lesson-content" id="lessonBody"></div>
+ <div class="section-title"><h2 id="readerTitle">Lesson</h2><button class="btn secondary" onclick="showView('chapters')">← Back</button></div>
+ <div class="lesson-content" id="lessonBody"></div>
+</section>
+
+<section class="view" id="library">
+ <div class="section-title"><h2>Study Library</h2><span class="muted">Explore more topics</span></div>
+ <div class="notice">Search the library or add your own personal study topics. The library is expandable; it is not limited to the starter chapter list.</div>
+ <input class="search" id="librarySearch" placeholder="Search Physics, Chemistry, Biology or topics..." oninput="renderLibrary()">
+ <div class="grid" id="libraryGrid" style="margin-top:14px"></div>
+ <div class="card" style="margin-top:15px">
+  <h3>Add a personal study topic</h3>
+  <div class="field"><label>Topic title</label><input id="customTitle" placeholder="e.g. Laws of motion"></div>
+  <div class="field"><label>Subject</label><select id="customSubject"><option>Physics</option><option>Chemistry</option><option>Biology</option><option>English</option><option>General Science</option></select></div>
+  <div class="field"><label>Study notes</label><textarea id="customText" placeholder="Write your notes here..."></textarea></div>
+  <button class="btn" onclick="addCustomTopic()">Add to my library</button>
+ </div>
 </section>
 
 <section class="view" id="english">
-<div class="section-title"><h2>English Academy</h2><span class="muted">Basics to advanced</span></div>
-<div class="grid" id="englishGrid"></div>
+ <div class="section-title"><h2>English Academy</h2><span class="muted">Beginner to advanced</span></div>
+ <div class="grid" id="englishGrid"></div>
 </section>
 
 <section class="view" id="saved">
-<div class="section-title"><h2>Saved Offline</h2><span class="muted">Stored on this device</span></div>
-<div class="notice">Save lessons while online, then revisit them here. Offline access depends on your browser keeping this website's data.</div>
-<div class="list" id="savedList"></div>
+ <div class="section-title"><h2>Saved Offline</h2><span class="muted">Stored on this device</span></div>
+ <div class="notice">Save lessons while online, then revisit them here. Offline access depends on your browser keeping this website's data and having previously loaded the lesson.</div>
+ <div class="list" id="savedList"></div>
+</section>
+
+<section class="view" id="progress">
+ <div class="section-title"><h2>My Learning Progress</h2></div>
+ <div class="stats">
+  <div class="stat"><span class="muted">Lessons completed</span><strong id="completedCount">0</strong></div>
+  <div class="stat"><span class="muted">Saved offline</span><strong id="progressSaved">0</strong></div>
+  <div class="stat"><span class="muted">Quiz attempts</span><strong id="quizCount">0</strong></div>
+ </div>
+ <div class="card"><h3>Learning activity</h3><p class="muted">Complete lessons and quizzes to build your progress record on this device.</p><div class="progress"><span id="progressBar"></span></div><p id="progressText" class="muted">Start your first lesson.</p></div>
+ <div class="section-title"><h2>Completed lessons</h2></div>
+ <div id="completedList" class="list"></div>
 </section>
 
 <section class="view" id="premium">
-<div class="card" style="max-width:580px;margin:20px auto;text-align:center">
-<div class="kicker">StudySphere Premium</div>
-<h2>Take your learning further</h2>
-<div class="price">Rs. 200 <small>/ 30 days</small></div>
-<p class="muted">Premium access is activated only after an administrator verifies the payment.</p>
-<div class="notice">Payment details and approval will be connected after the core lessons are confirmed working. Do not send money to an unverified account or share any PIN/OTP.</div>
-<button class="btn gold" onclick="alert('Premium payment setup will be connected after the lesson system is tested.')">Premium setup</button>
-</div>
+ <div class="card" style="max-width:650px;margin:20px auto">
+  <div class="kicker">StudySphere Premium</div>
+  <h2>Take your learning further</h2>
+  <div class="price">Rs. 200 <small>/ 30 days</small></div>
+  <p class="muted">Premium access is activated only after an administrator verifies the payment.</p>
+  <div class="notice">Only make payments using verified details provided by an authorized account holder with their permission. Never share a PIN or OTP.</div>
+  <div id="premiumStatus" class="notice">Login is required to submit a payment request.</div>
+  <div class="field"><label>Payment method</label><select id="payMethod"><option value="easypaisa">Easypaisa</option><option value="jazzcash">JazzCash</option></select></div>
+  <div class="field"><label>Transaction reference / ID</label><input id="transactionId" placeholder="Enter transaction reference"></div>
+  <div class="field"><label>Payment receipt image</label><input id="receiptFile" type="file" accept="image/png,image/jpeg,image/webp"></div>
+  <button class="btn gold" onclick="submitPayment()">Submit payment request</button>
+  <p class="muted" style="font-size:12px">Your request will remain pending until reviewed. Submitting a receipt does not activate Premium automatically.</p>
+ </div>
+</section>
+
+<section class="view" id="account">
+ <div class="card" style="max-width:540px;margin:15px auto">
+  <h2 id="accountHeading">Student account</h2>
+  <div id="signedOut">
+   <div class="field"><label>Email address</label><input id="email" type="email" placeholder="Your email"></div>
+   <div class="field"><label>Password</label><input id="password" type="password" placeholder="At least 8 characters"></div>
+   <div class="row">
+    <button class="btn" onclick="signIn()">Login</button>
+    <button class="btn secondary" onclick="signUp()">Create account</button>
+   </div>
+   <p class="muted" style="font-size:12px">Use an email address you can access. Email confirmation may be required by your Supabase settings.</p>
+  </div>
+  <div id="signedIn" style="display:none">
+   <p id="accountEmail" class="muted"></p>
+   <p id="accountPremium"></p>
+   <button class="btn danger" onclick="signOut()">Sign out</button>
+  </div>
+ </div>
+</section>
+
+<section class="view" id="admin">
+ <div class="section-title"><h2>Admin payment review</h2></div>
+ <div class="notice">Only the configured administrator account can access this section. Payment approval requires the admin_decide_payment database function to exist and be configured correctly.</div>
+ <button class="btn secondary" onclick="loadAdminPayments()">Refresh requests</button>
+ <div class="list" id="adminPayments" style="margin-top:14px"></div>
 </section>
 </main>
 <footer>© 2026 StudySphere • Learn with curiosity. Grow with confidence.</footer>
 </div>
+<div id="toast"></div>
 
 <script>
-const subjectIcons={Physics:'⚛️',Chemistry:'🧪',Biology:'🧬'};
+/* SUPABASE SETTINGS */
+const SUPABASE_URL = "https://qsxfcvlqyxjjgpapoesr.supabase.co";
+const SUPABASE_KEY = "sb_publishable_3liY4myr_WFdvIfcNRsIxA_qPFLbwl7";
+const ADMIN_USER_ID = "fd357f56-570c-40a7-9b86-5c2a50a936cd";
+const db = window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
+/* STARTER COURSE OUTLINE */
+const subjectIcons={Physics:"⚛️",Chemistry:"🧪",Biology:"🧬"};
 const chapterData={
 9:{
-Physics:['Physical quantities and measurement','Kinematics','Dynamics','Turning effect of forces','Gravitation','Work and energy','Properties of matter','Thermal properties of matter','Transfer of heat'],
-Chemistry:['Fundamentals of Chemistry','Structure of atoms','Periodic table and periodicity','Chemical bonding','Physical states of matter','Solutions','Electrochemistry','Chemical reactivity'],
-Biology:['Introduction to Biology','Solving a biological problem','Biodiversity','Cells and tissues','Cell cycle','Enzymes','Bioenergetics','Nutrition','Transport']
-},
+Physics:["Physical quantities and measurement","Kinematics","Dynamics","Turning effect of forces","Gravitation","Work and energy","Properties of matter","Thermal properties of matter","Transfer of heat"],
+Chemistry:["Fundamentals of Chemistry","Structure of atoms","Periodic table and periodicity","Chemical bonding","Physical states of matter","Solutions","Electrochemistry","Chemical reactivity"],
+Biology:["Introduction to Biology","Solving a biological problem","Biodiversity","Cells and tissues","Cell cycle","Enzymes","Bioenergetics","Nutrition","Transport"]},
 10:{
-Physics:['Simple harmonic motion and waves','Sound','Geometrical optics','Electrostatics','Current electricity','Electromagnetism','Basic electronics','Information and communication technology','Atomic and nuclear physics'],
-Chemistry:['Chemical equilibrium','Acids, bases and salts','Organic chemistry','Hydrocarbons','Biochemistry','The atmosphere','Water','Chemical industries'],
-Biology:['Gaseous exchange','Homeostasis','Coordination and control','Support and movement','Reproduction','Inheritance','Man and his environment','Biotechnology','Pharmacology']
-},
+Physics:["Simple harmonic motion and waves","Sound","Geometrical optics","Electrostatics","Current electricity","Electromagnetism","Basic electronics","Information and communication technology","Atomic and nuclear physics"],
+Chemistry:["Chemical equilibrium","Acids, bases and salts","Organic chemistry","Hydrocarbons","Biochemistry","The atmosphere","Water","Chemical industries"],
+Biology:["Gaseous exchange","Homeostasis","Coordination and control","Support and movement","Reproduction","Inheritance","Man and his environment","Biotechnology","Pharmacology"]},
 11:{
-Physics:['Measurements','Vectors and equilibrium','Motion and force','Work and energy','Circular motion','Fluid dynamics','Oscillations','Waves','Physical optics','Optical instruments'],
-Chemistry:['Basic concepts','Experimental techniques','Gases','Liquids and solids','Atomic structure','Chemical bonding','Thermochemistry','Chemical equilibrium','Solutions','Electrochemistry'],
-Biology:['Introduction to biology','Biological molecules','Enzymes','The cell','Variety of life','Kingdom prokaryotae','Kingdom protista','Fungi','Kingdom plantae','Kingdom animalia']
-},
+Physics:["Measurements","Vectors and equilibrium","Motion and force","Work and energy","Circular motion","Fluid dynamics","Oscillations","Waves","Physical optics","Optical instruments"],
+Chemistry:["Basic concepts","Experimental techniques","Gases","Liquids and solids","Atomic structure","Chemical bonding","Thermochemistry","Chemical equilibrium","Solutions","Electrochemistry"],
+Biology:["Introduction to biology","Biological molecules","Enzymes","The cell","Variety of life","Kingdom prokaryotae","Kingdom protista","Fungi","Kingdom plantae","Kingdom animalia"]},
 12:{
-Physics:['Electrostatics','Current electricity','Electromagnetism','Electromagnetic induction','Alternating current','Physics of solids','Electronics','Dawn of modern physics','Atomic spectra','Nuclear physics'],
-Chemistry:['Periodic classification','s-block elements','Group IIIA and IVA elements','Group VA and VIA elements','The halogens and noble gases','Transition elements','Fundamental principles of organic chemistry','Aliphatic hydrocarbons','Aromatic hydrocarbons','Alkyl halides'],
-Biology:['Homeostasis','Support and movement','Coordination and control','Reproduction','Growth and development','Chromosomes and DNA','Cell cycle','Variation and genetics','Biotechnology','Evolution']
+Physics:["Electrostatics","Current electricity","Electromagnetism","Electromagnetic induction","Alternating current","Physics of solids","Electronics","Dawn of modern physics","Atomic spectra","Nuclear physics"],
+Chemistry:["Periodic classification","s-block elements","Group IIIA and IVA elements","Group VA and VIA elements","The halogens and noble gases","Transition elements","Fundamental principles of organic chemistry","Aliphatic hydrocarbons","Aromatic hydrocarbons","Alkyl halides"],
+Biology:["Homeostasis","Support and movement","Coordination and control","Reproduction","Growth and development","Chromosomes and DNA","Cell cycle","Variation and genetics","Biotechnology","Evolution"]}
+};
+
+const extraTopics={
+Physics:["Scalars and vectors","Distance and displacement","Speed and velocity","Acceleration","Newton's laws of motion","Momentum","Conservation of energy","Power","Density and pressure","Waves and sound","Reflection of light","Refraction of light","Electric charge","Electric current","Resistance and Ohm's law","Magnetic fields","Electromagnetic induction","Radioactivity","Nuclear energy"],
+Chemistry:["Elements, compounds and mixtures","Atomic number and mass number","Isotopes","Electron configuration","Periodic trends","Ionic bonding","Covalent bonding","Metallic bonding","Mole concept","Chemical equations","Balancing equations","Acids and bases","pH scale","Oxidation and reduction","Reaction rates","Organic compounds","Hydrocarbons","Polymers","Environmental chemistry"],
+Biology:["Characteristics of life","Levels of biological organization","Microscope","Cell theory","Cell membrane","Cytoplasm and organelles","Nucleus","Mitosis","Meiosis","Carbohydrates","Proteins","Lipids","DNA and RNA","Photosynthesis","Cellular respiration","Human digestion","Blood circulation","Respiration","Excretion","Nervous system","Endocrine system","Immunity","Genetics","Evolution","Ecology"]
+};
+
+const definitions={
+"Physical quantities and measurement":["A physical quantity is a property that can be measured and expressed using a number and a unit.","Examples include length, mass, time, temperature and electric current.","The SI system provides internationally accepted standard units."],
+"Measurements":["Measurement compares an unknown quantity with an accepted standard unit.","A measurement is written as a numerical value followed by a unit.","Accuracy describes closeness to the accepted value; precision describes consistency."],
+"Kinematics":["Kinematics is the branch of mechanics that describes motion without studying its causes.","Distance is the total path travelled; displacement is the change in position in a specified direction.","Speed is distance travelled per unit time, while velocity is displacement per unit time."],
+"Dynamics":["Dynamics studies motion and the forces that cause changes in motion.","A force can change an object's speed, direction or shape.","Newton's laws describe the relationship between force and motion."],
+"Work and energy":["Work is done when a force causes displacement in its direction or has a component along the displacement.","Energy is the capacity to do work.","Kinetic energy is associated with motion; potential energy is associated with position or configuration."],
+"Fundamentals of Chemistry":["Chemistry studies matter, its composition, properties and the changes it undergoes.","Matter has mass and occupies space.","An element contains one type of atom; a compound contains elements chemically combined in fixed proportions."],
+"Structure of atoms":["An atom contains a nucleus surrounded by electrons.","The nucleus contains positively charged protons and neutral neutrons.","The atomic number equals the number of protons in an atom."],
+"Chemical bonding":["Chemical bonds are attractions that hold atoms or ions together.","Ionic bonding involves electron transfer and attraction between oppositely charged ions.","Covalent bonding involves sharing electron pairs."],
+"Introduction to Biology":["Biology is the scientific study of living organisms.","Living organisms show features such as cellular organization, metabolism, growth and response to stimuli.","Biology includes the study of organisms and their interactions with the environment."],
+"The cell":["The cell is the basic structural and functional unit of life.","The cell membrane regulates movement of substances into and out of the cell.","The nucleus contains genetic material in many eukaryotic cells."],
+"Enzymes":["Enzymes are biological catalysts that increase the rate of biochemical reactions.","Most enzymes are proteins and have specific active sites.","Temperature and pH can affect enzyme activity."]
+};
+
+let current={grade:"9",subject:"Physics",chapter:""};
+let activeLesson=null;
+let currentUser=null;
+let isAdmin=false;
+let premiumActive=false;
+
+function toast(msg){
+ const t=document.getElementById("toast");t.textContent=msg;t.style.display="block";
+ setTimeout(()=>t.style.display="none",2800);
 }
-};
-
-const intro={
-'Physical quantities and measurement':'Physics uses measurable quantities to describe nature. A physical quantity has a numerical value and a unit. Examples include length, mass, time and temperature.',
-'Introduction to Biology':'Biology is the scientific study of living organisms. It explores their structure, functions, growth, origin and interactions with the environment.',
-'Fundamentals of Chemistry':'Chemistry is the study of matter, its composition, properties and the changes it undergoes. Matter has mass and occupies space.',
-'Measurements':'Measurement compares an unknown quantity with an accepted standard unit. A good measurement includes both a number and a unit.',
-'The cell':'The cell is the basic structural and functional unit of life. Some organisms consist of one cell, while others contain many specialized cells.'
-};
-
-let current={grade:'9',subject:'Physics',chapter:''};
-
 function showView(id){
-document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
-const el=document.getElementById(id);
-if(el)el.classList.add('active');
-document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.view===id));
-window.scrollTo(0,0);
-if(id==='saved')renderSaved();
+ document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
+ document.getElementById(id)?.classList.add("active");
+ document.querySelectorAll("#nav button").forEach(b=>b.classList.toggle("active",b.dataset.view===id));
+ window.scrollTo(0,0);
+ if(id==="saved")renderSaved();
+ if(id==="progress")renderProgress();
+ if(id==="library")renderLibrary();
+ if(id==="admin"&&isAdmin)loadAdminPayments();
 }
-
-document.querySelectorAll('#nav button').forEach(b=>b.addEventListener('click',()=>showView(b.dataset.view)));
+document.querySelectorAll("#nav button").forEach(b=>b.addEventListener("click",()=>showView(b.dataset.view)));
 
 function renderSubjects(){
-const g=document.getElementById('grade').value;
-const box=document.getElementById('subjectGrid');
-box.innerHTML=Object.keys(chapterData[g]).map(s=>`
-<article class="card subject">
-<div class="subject-top">${subjectIcons[s]}</div>
-<div class="subject-body">
-<h3>${s}</h3>
-<p>${chapterData[g][s].length} chapters • Class ${g}</p>
-<button class="btn secondary" onclick="openSubject('${s}')">View chapters</button>
-</div>
-</article>`).join('');
+ const g=document.getElementById("grade").value,box=document.getElementById("subjectGrid");
+ box.innerHTML=Object.keys(chapterData[g]).map(s=>`
+ <article class="card subject"><div class="subject-top">${subjectIcons[s]}</div>
+ <div class="subject-body"><h3>${s}</h3><p>${chapterData[g][s].length} starter chapters • Class ${g}</p>
+ <button class="btn secondary" onclick="openSubject('${s}')">View chapters</button></div></article>`).join("");
 }
-
 function openSubject(s){
-current.grade=document.getElementById('grade').value;
-current.subject=s;
-document.getElementById('chapterHeading').textContent=`Class ${current.grade} • ${s}`;
-document.getElementById('chapterList').innerHTML=chapterData[current.grade][s].map((c,i)=>`
-<div class="item">
-<div><strong>${i+1}. ${c}</strong><small>Class ${current.grade} • ${s}</small></div>
-<div class="item-actions">
-<button class="btn secondary" onclick="openLesson(${i})">Open lesson</button>
-<button class="btn" onclick="saveLesson(${i})">Save offline</button>
-</div>
-</div>`).join('');
-showView('chapters');
+ current.grade=document.getElementById("grade").value;current.subject=s;
+ document.getElementById("chapterHeading").textContent=`Class ${current.grade} • ${s}`;
+ document.getElementById("chapterSearch").value="";
+ renderChapterList();showView("chapters");
 }
+function getChapters(){
+ const g=current.grade,s=current.subject;
+ return [...(chapterData[g]?.[s]||[]),...(extraTopics[s]||[])];
+}
+function renderChapterList(filter=""){
+ const chapters=getChapters().filter(x=>x.toLowerCase().includes(filter.toLowerCase()));
+ document.getElementById("chapterList").innerHTML=chapters.map((c,i)=>`
+ <div class="item"><div><strong>${i+1}. ${c}</strong><small>Class ${current.grade} • ${current.subject}</small></div>
+ <div class="item-actions"><button class="btn secondary" onclick="openLesson('${encodeURIComponent(c)}')">Open lesson</button>
+ <button class="btn" onclick="saveLesson('${encodeURIComponent(c)}')">Save offline</button></div></div>`).join("")||'<div class="card muted">No matching topics found.</div>';
+}
+function filterChapters(){renderChapterList(document.getElementById("chapterSearch").value)}
 
-function lessonText(ch){
-return intro[ch]||`${ch} is an important topic in ${current.subject}. In this chapter, study the key definitions, basic principles, examples and applications. Make short notes, learn the important terms, and practise textbook questions to strengthen your understanding.`;
+function makeLesson(subject,title){
+ const base=definitions[title]||[
+ `${title} is an important topic in ${subject}. It helps explain key ideas, principles and applications in this subject.`,
+ `Begin by learning the important terms and understanding the basic concept. Connect each new idea with examples from everyday life.`,
+ `Study the relevant diagrams, equations or processes. Write short notes in your own words and review them regularly.`
+ ];
+ const subjectExtra={
+ Physics:"In Physics, identify the physical quantities involved, their SI units and the relationships between them. Draw a labelled diagram when it helps explain the situation.",
+ Chemistry:"In Chemistry, focus on definitions, symbols, formulae, equations and the changes taking place. Check that chemical equations are balanced when required.",
+ Biology:"In Biology, learn the structure and function of each part, understand the sequence of processes and practise drawing clear labelled diagrams."
+ };
+ return {title,subject,points:base,extra:subjectExtra[subject]||"Practise using examples and explain the concept in your own words."};
 }
+function openLesson(encoded){
+ const ch=decodeURIComponent(encoded);current.chapter=ch;
+ activeLesson=makeLesson(current.subject,ch);
+ renderLesson(activeLesson,false);showView("reader");
+}
+function renderLesson(lesson,saved){
+ document.getElementById("readerTitle").textContent=lesson.title;
+ const completed=getCompleted().includes(lesson.title);
+ document.getElementById("lessonBody").innerHTML=`
+ <div><span class="chip">${lesson.subject}</span><span class="chip">Study lesson</span>${saved?'<span class="chip">Saved offline</span>':''}</div>
+ <h2>${lesson.title}</h2><h3>Introduction and key concepts</h3>
+ ${lesson.points.map(p=>`<p>${escapeHTML(p)}</p>`).join("")}
+ <h3>Important points</h3><ul>
+ <li>Understand the definition and main idea.</li><li>Learn important terms, units or structures.</li>
+ <li>Practise examples and explain the topic in your own words.</li><li>Review the topic after studying related chapters.</li></ul>
+ <h3>Study application</h3><p>${escapeHTML(lesson.extra)}</p>
+ <h3>Quick revision</h3><p>Close your notes and explain the topic in three to five sentences. Write down anything you need to revise.</p>
+ <div class="notice">This is an original starter explanation, not a complete official textbook chapter. More detailed topic notes, diagrams and exercises can be added to the library.</div>
+ <div class="item-actions"><button class="btn" onclick="saveCurrentLesson()">Save offline</button>
+ <button class="btn secondary" onclick="markCompleted('${encodeURIComponent(lesson.title)}')">${completed?"Completed ✓":"Mark completed"}</button>
+ <button class="btn secondary" onclick="startQuiz()">Practice MCQs</button></div>`;
+}
+function escapeHTML(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 
-function openLesson(i){
-const ch=chapterData[current.grade][current.subject][i];
-current.chapter=ch;
-document.getElementById('readerTitle').textContent=ch;
-document.getElementById('lessonBody').innerHTML=`
-<div><span class="chip">Class ${current.grade}</span><span class="chip">${current.subject}</span><span class="chip">Study lesson</span></div>
-<h2>${ch}</h2>
-<h3>Introduction</h3>
-<p>${lessonText(ch)}</p>
-<h3>How to study this chapter</h3>
-<p>1. Read the textbook section carefully.<br>2. Write important definitions in your own words.<br>3. Review diagrams, formulas or examples.<br>4. Practise questions and revise your notes.</p>
-<div class="notice">This is a starter lesson outline. Full textbook-aligned notes and exercises can be added chapter by chapter.</div>
-<button class="btn" onclick="saveCurrentLesson()">Save this lesson offline</button>`;
-showView('reader');
-}
-
-function getSaved(){
-try{return JSON.parse(localStorage.getItem('ss_saved')||'[]')}
-catch(e){return []}
-}
-
-function saveLesson(i){
-const ch=chapterData[current.grade][current.subject][i];
-const data={grade:current.grade,subject:current.subject,chapter:ch,text:lessonText(ch)};
-const arr=getSaved();
-if(!arr.some(x=>x.grade===data.grade&&x.subject===data.subject&&x.chapter===data.chapter)){
-arr.push(data);
-localStorage.setItem('ss_saved',JSON.stringify(arr));
-}
-updateSavedCount();
-alert('Lesson saved on this device.');
-}
-
+/* OFFLINE STORAGE */
+function getSaved(){try{return JSON.parse(localStorage.getItem("ss_saved")||"[]")}catch(e){return []}}
 function saveCurrentLesson(){
-const arr=getSaved();
-const data={grade:current.grade,subject:current.subject,chapter:current.chapter,text:lessonText(current.chapter)};
-if(!arr.some(x=>x.grade===data.grade&&x.subject===data.subject&&x.chapter===data.chapter))arr.push(data);
-localStorage.setItem('ss_saved',JSON.stringify(arr));
-updateSavedCount();
-alert('Lesson saved offline.');
+ if(!activeLesson)return;
+ const arr=getSaved();
+ if(!arr.some(x=>x.title===activeLesson.title&&x.subject===activeLesson.subject)){
+  arr.push(activeLesson);localStorage.setItem("ss_saved",JSON.stringify(arr));
+ }
+ updateSavedCount();toast("Lesson saved on this device.");
 }
-
+function saveLesson(encoded){
+ const ch=decodeURIComponent(encoded);activeLesson=makeLesson(current.subject,ch);saveCurrentLesson();
+}
 function updateSavedCount(){
-document.getElementById('savedCount').textContent=getSaved().length;
+ const n=getSaved().length;document.getElementById("savedCount").textContent=n;
+ document.getElementById("progressSaved").textContent=n;
 }
-
 function renderSaved(){
-const arr=getSaved();
-document.getElementById('savedList').innerHTML=arr.length?arr.map((x,i)=>`
-<div class="item">
-<div><strong>${x.chapter}</strong><small>Class ${x.grade} • ${x.subject}</small></div>
-<div class="item-actions">
-<button class="btn secondary" onclick="readSaved(${i})">Read</button>
-<button class="btn secondary" onclick="removeSaved(${i})">Remove</button>
-</div>
-</div>`).join(''):'<div class="card muted">No lessons saved yet. Open a chapter and tap Save offline.</div>';
+ const arr=getSaved();
+ document.getElementById("savedList").innerHTML=arr.length?arr.map((x,i)=>`
+ <div class="item"><div><strong>${escapeHTML(x.title)}</strong><small>${escapeHTML(x.subject)}</small></div>
+ <div class="item-actions"><button class="btn secondary" onclick="readSaved(${i})">Read</button>
+ <button class="btn danger" onclick="removeSaved(${i})">Remove</button></div></div>`).join(""):'<div class="card muted">No lessons saved yet.</div>';
+}
+function readSaved(i){const x=getSaved()[i];activeLesson=x;renderLesson(x,true);showView("reader")}
+function removeSaved(i){const a=getSaved();a.splice(i,1);localStorage.setItem("ss_saved",JSON.stringify(a));renderSaved();updateSavedCount()}
+
+/* PERSONAL LIBRARY */
+function getCustom(){try{return JSON.parse(localStorage.getItem("ss_custom")||"[]")}catch(e){return []}}
+function addCustomTopic(){
+ const title=document.getElementById("customTitle").value.trim(),subject=document.getElementById("customSubject").value,text=document.getElementById("customText").value.trim();
+ if(!title||!text){toast("Add a title and study notes first.");return}
+ const a=getCustom();a.push({title,subject,points:[text],extra:"Review your notes and practise explaining this topic."});
+ localStorage.setItem("ss_custom",JSON.stringify(a));
+ document.getElementById("customTitle").value="";document.getElementById("customText").value="";
+ renderLibrary();toast("Topic added to your personal library.");
+}
+function renderLibrary(){
+ const q=(document.getElementById("librarySearch")?.value||"").toLowerCase();
+ let items=[];
+ Object.keys(extraTopics).forEach(s=>extraTopics[s].forEach(t=>items.push({title:t,subject:s})));
+ getCustom().forEach(x=>items.push(x));
+ items=items.filter(x=>(x.title+" "+x.subject).toLowerCase().includes(q));
+ document.getElementById("libraryGrid").innerHTML=items.map((x,i)=>`
+ <article class="card"><span class="chip">${escapeHTML(x.subject)}</span><h3>${escapeHTML(x.title)}</h3>
+ <button class="btn secondary" onclick="openLibraryTopic(${i})">Study topic</button></article>`).join("")||'<div class="card muted">No topics match your search.</div>';
+ window.libraryItems=items;
+}
+function openLibraryTopic(i){
+ const x=(window.libraryItems||[])[i];if(!x)return;
+ activeLesson=x.points?x:makeLesson(x.subject,x.title);renderLesson(activeLesson,false);showView("reader");
 }
 
-function readSaved(i){
-const x=getSaved()[i];
-current={grade:x.grade,subject:x.subject,chapter:x.chapter};
-document.getElementById('readerTitle').textContent=x.chapter;
-document.getElementById('lessonBody').innerHTML=`
-<div><span class="chip">Class ${x.grade}</span><span class="chip">${x.subject}</span><span class="chip">Saved offline</span></div>
-<h2>${x.chapter}</h2><p>${x.text}</p>
-<div class="notice">This lesson is stored on this device.</div>`;
-showView('reader');
+/* QUIZZES */
+let quizAttempts=0;
+function startQuiz(){
+ const title=activeLesson?.title||"this topic";
+ const questions=[
+ {q:"What is the best way to understand a new scientific topic?",a:["Memorize words only","Understand concepts and practise examples","Skip definitions"],correct:1},
+ {q:"What should good study notes include?",a:["Key ideas and explanations","Only page numbers","Unrelated facts"],correct:0},
+ {q:"What is a useful revision method?",a:["Never review","Explain the idea in your own words","Study without understanding"],correct:1}
+ ];
+ let html=`<h2>Quick practice: ${escapeHTML(title)}</h2><form id="quizForm">`;
+ questions.forEach((q,i)=>{html+=`<h3>${i+1}. ${q.q}</h3>`+q.a.map((a,j)=>`<label style="display:block;margin:8px"><input type="radio" name="q${i}" value="${j}"> ${a}</label>`).join("")});
+ html+=`<button class="btn" type="submit">Check answers</button></form><div id="quizResult"></div>`;
+ document.getElementById("lessonBody").innerHTML=html;
+ document.getElementById("quizForm").onsubmit=e=>{
+  e.preventDefault();let score=0;
+  questions.forEach((q,i)=>{if(Number(new FormData(e.target).get("q"+i))===q.correct)score++});
+  quizAttempts++;localStorage.setItem("ss_quiz",quizAttempts);
+  document.getElementById("quizResult").innerHTML=`<div class="notice">Your score: ${score} / ${questions.length}. Review the topic and try again.</div>`;
+  renderProgress();
+ };
 }
 
-function removeSaved(i){
-const a=getSaved();
-a.splice(i,1);
-localStorage.setItem('ss_saved',JSON.stringify(a));
-renderSaved();
-updateSavedCount();
+/* PROGRESS */
+function getCompleted(){try{return JSON.parse(localStorage.getItem("ss_completed")||"[]")}catch(e){return []}}
+function markCompleted(encoded){
+ const title=decodeURIComponent(encoded),a=getCompleted();if(!a.includes(title))a.push(title);
+ localStorage.setItem("ss_completed",JSON.stringify(a));toast("Lesson marked completed.");renderLesson(activeLesson,false);renderProgress();
+}
+function renderProgress(){
+ const a=getCompleted();document.getElementById("completedCount").textContent=a.length;
+ document.getElementById("quizCount").textContent=localStorage.getItem("ss_quiz")||"0";
+ document.getElementById("completedList").innerHTML=a.length?a.map(x=>`<div class="item"><strong>${escapeHTML(x)}</strong><span class="chip">Completed ✓</span></div>`).join(""):'<div class="card muted">No completed lessons yet.</div>';
+ document.getElementById("progressText").textContent=a.length?`${a.length} lessons completed on this device.`:"Start your first lesson.";
+ document.getElementById("progressBar").style.width=Math.min(100,a.length*5)+"%";
+ updateSavedCount();
 }
 
+/* ENGLISH ACADEMY */
 const english=[
-['Beginner','Alphabet, basic words, greetings, pronouns and simple sentences.'],
-['Elementary','Daily conversation, present/past/future tense and common vocabulary.'],
-['Pre-intermediate','Question forms, paragraphs, everyday speaking and listening.'],
-['Intermediate','Grammar practice, reading comprehension, writing and conversation.'],
-['Upper-intermediate','Fluent speaking, longer writing, vocabulary and presentations.'],
-['Advanced','Academic English, critical reading, formal writing and confident communication.']
+["Beginner","Alphabet, basic words, greetings, pronouns and simple sentences."],
+["Elementary","Daily conversation, present/past/future tense and common vocabulary."],
+["Pre-intermediate","Question forms, paragraphs, everyday speaking and listening."],
+["Intermediate","Grammar practice, reading comprehension, writing and conversation."],
+["Upper-intermediate","Fluent speaking, longer writing, vocabulary and presentations."],
+["Advanced","Academic English, critical reading, formal writing and communication."]
 ];
-
 function renderEnglish(){
-document.getElementById('englishGrid').innerHTML=english.map((x,i)=>`
-<article class="card">
-<div class="kicker">Level ${i+1}</div>
-<h3>${x[0]}</h3>
-<p class="muted">${x[1]}</p>
-<button class="btn secondary" onclick="englishLesson(${i})">Open level</button>
-</article>`).join('');
+ document.getElementById("englishGrid").innerHTML=english.map((x,i)=>`
+ <article class="card"><div class="kicker">Level ${i+1}</div><h3>${x[0]}</h3><p class="muted">${x[1]}</p>
+ <button class="btn secondary" onclick="englishLesson(${i})">Open level</button></article>`).join("");
 }
-
 function englishLesson(i){
-const x=english[i];
-document.getElementById('readerTitle').textContent=`English • ${x[0]}`;
-document.getElementById('lessonBody').innerHTML=`
-<div><span class="chip">English Academy</span><span class="chip">${x[0]}</span></div>
-<h2>${x[0]} English</h2>
-<p>${x[1]}</p>
-<h3>Practice</h3>
-<p>Write five sentences about your day. Read them aloud slowly. Learn five new words and use each word in a sentence.</p>
-<div class="notice">English Academy lesson outline. More lessons and exercises can be added level by level.</div>`;
-showView('reader');
+ const x=english[i];activeLesson={title:x[0]+" English",subject:"English",points:[x[1],"Learn a small group of words, read example sentences and practise speaking clearly.","Write your own examples and check grammar, spelling and meaning."],extra:"Daily practice can improve reading, writing, listening and speaking."};
+ renderLesson(activeLesson,false);showView("reader");
 }
 
-renderSubjects();
-renderEnglish();
-updateSavedCount();
+/* SUPABASE AUTH */
+async function signUp(){
+ const email=document.getElementById("email").value.trim(),password=document.getElementById("password").value;
+ if(!email||password.length<8){toast("Enter a valid email and password of at least 8 characters.");return}
+ const {data,error}=await db.auth.signUp({email,password});
+ if(error){toast(error.message);return}
+ toast("Signup submitted. Check your email if confirmation is enabled.");
+}
+async function signIn(){
+ const email=document.getElementById("email").value.trim(),password=document.getElementById("password").value;
+ const {data,error}=await db.auth.signInWithPassword({email,password});
+ if(error){toast(error.message);return}
+ await refreshUser(data.user);
+ toast("Login successful.");
+}
+async function signOut(){
+ const {error}=await db.auth.signOut();if(error){toast(error.message);return}
+ currentUser=null;isAdmin=false;premiumActive=false;refreshAccount();toast("Signed out.");
+}
+async function refreshUser(user){
+ currentUser=user||null;
+ isAdmin=!!currentUser&&currentUser.id===ADMIN_USER_ID;
+ document.getElementById("adminNav").style.display=isAdmin?"block":"none";
+ document.getElementById("userLabel").textContent=currentUser?currentUser.email:"Guest learner";
+ refreshAccount();
+}
+function refreshAccount(){
+ document.getElementById("signedOut").style.display=currentUser?"none":"block";
+ document.getElementById("signedIn").style.display=currentUser?"block":"none";
+ document.getElementById("accountHeading").textContent=currentUser?"Your account":"Student account";
+ document.getElementById("accountEmail").textContent=currentUser?.email||"";
+ document.getElementById("authButton").textContent=currentUser?"Account":"Login / Signup";
+ document.getElementById("accountPremium").textContent=premiumActive?"Premium status: Active":"Premium status: Not verified";
+ document.getElementById("premiumStatus").textContent=currentUser?"Logged in. Submit your payment receipt for administrator review.":"Login is required to submit a payment request.";
+}
+db.auth.onAuthStateChange((_event,session)=>{refreshUser(session?.user||null)});
+(async()=>{const {data}=await db.auth.getSession();await refreshUser(data.session?.user||null)})();
+
+/* PAYMENT REQUEST */
+async function submitPayment(){
+ if(!currentUser){toast("Please login first.");showView("account");return}
+ const reference=document.getElementById("transactionId").value.trim();
+ const file=document.getElementById("receiptFile").files[0];
+ const method=document.getElementById("payMethod").value;
+ if(!reference||!file){toast("Enter transaction ID and upload receipt.");return}
+ if(!["image/jpeg","image/png","image/webp"].includes(file.type)||file.size>5*1024*1024){toast("Use JPG, PNG or WEBP under 5 MB.");return}
+ const ext=file.name.split(".").pop().toLowerCase();
+ const path=`${currentUser.id}/${Date.now()}.${ext}`;
+ const {error:uploadError}=await db.storage.from("payment-receipts").upload(path,file,{contentType:file.type,upsert:false});
+ if(uploadError){toast("Receipt upload failed: "+uploadError.message);return}
+ const payload={
+  user_id:currentUser.id,
+  amount:200,
+  method:method,
+  status:"pending",
+  reviewed_by:null,
+  receipt_path:path,
+  transaction_reference:reference
+ };
+ const {error}=await db.from("payment_requests").insert(payload);
+ if(error){toast("Request could not be saved: "+error.message);return}
+ document.getElementById("transactionId").value="";
+ document.getElementById("receiptFile").value="";
+ toast("Payment request submitted. Waiting for admin review.");
+ document.getElementById("premiumStatus").textContent="Payment request submitted and awaiting verification.";
+}
+
+/* ADMIN REVIEW */
+async function loadAdminPayments(){
+ if(!isAdmin){toast("Admin access only.");return}
+ const box=document.getElementById("adminPayments");box.innerHTML='<div class="card muted">Loading requests...</div>';
+ const {data,error}=await db.from("payment_requests").select("*").eq("status","pending").order("created_at",{ascending:false});
+ if(error){box.innerHTML=`<div class="card">Could not load requests: ${escapeHTML(error.message)}</div>`;return}
+ if(!data?.length){box.innerHTML='<div class="card muted">No pending payment requests.</div>';return}
+ box.innerHTML=data.map(r=>`
+ <div class="item"><div><strong>Request: ${escapeHTML(r.id||r.request_id||"Pending")}</strong>
+ <small>User: ${escapeHTML(r.user_id||"")} • Rs. ${escapeHTML(r.amount||"200")} • ${escapeHTML(r.method||"")}</small>
+ <small>Transaction: ${escapeHTML(r.transaction_reference||"")}</small></div>
+ <div class="item-actions"><button class="btn" onclick="decidePayment('${r.id||r.request_id}',true)">Approve</button>
+ <button class="btn danger" onclick="decidePayment('${r.id||r.request_id}',false)">Reject</button></div></div>`).join("");
+}
+async function decidePayment(id,approve){
+ if(!isAdmin||!id){toast("Admin permission or request ID missing.");return}
+ const {data,error}=await db.rpc("admin_decide_payment",{p_request_id:id,p_approve:approve});
+ if(error){toast("Approval function is not ready: "+error.message);return}
+ toast(approve?"Payment approved.":"Payment rejected.");
+ loadAdminPayments();
+}
+
+/* INITIALIZE */
+renderSubjects();renderEnglish();renderLibrary();updateSavedCount();renderProgress();
 </script>
 </body>
 </html>
-                                                                                                  
