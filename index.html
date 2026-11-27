@@ -1,0 +1,291 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#101827">
+<title>StudySphere | Kapil Raj Chohan</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#0b1220;color:#f1f5f9;font-family:Arial,sans-serif}
+header{padding:25px 16px;background:linear-gradient(120deg,#15364b,#25234a);text-align:center}
+header h1{font-size:30px;margin:0;color:#65e6cb}
+header p{color:#c5d2e2}
+main{max-width:900px;margin:auto;padding:16px}
+nav{display:flex;gap:8px;flex-wrap:wrap;margin:15px 0}
+button,select,input{padding:12px;border-radius:10px;border:1px solid #34445a;background:#1b2940;color:white}
+button{cursor:pointer}
+button.active,.primary{background:#65e6cb;color:#09201d;font-weight:bold}
+.card{background:#142033;border:1px solid #304057;padding:18px;border-radius:15px;margin:12px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px}
+.number{font-size:30px;color:#65e6cb;font-weight:bold}
+label{display:block;color:#b9c8d9;margin:10px 0 5px}
+select{width:100%}
+#question{font-size:20px;line-height:1.5;margin:20px 0}
+#answer{background:#10352e;padding:15px;border-radius:10px;margin-top:15px}
+.hidden{display:none}
+.muted{color:#a9b8cc}
+footer{text-align:center;padding:25px;color:#a9b8cc}
+</style>
+</head>
+<body>
+
+<header>
+<h1>StudySphere</h1>
+<p>Learn • Practice • Improve</p>
+<p>Founder: <b>Kapil Raj Chohan</b></p>
+</header>
+
+<main>
+<nav>
+<button class="active" onclick="page('home',this)">Home</button>
+<button onclick="page('study',this)">Study</button>
+<button onclick="page('about',this)">About</button>
+</nav>
+
+<section id="home">
+<h2>Welcome to StudySphere</h2>
+<p class="muted">Your free science learning platform.</p>
+
+<div class="grid">
+<div class="card">
+<div class="number">170</div>
+Physics Questions
+</div>
+<div class="card">
+<div class="number">170</div>
+Chemistry Questions
+</div>
+<div class="card">
+<div class="number">160</div>
+Biology Questions
+</div>
+</div>
+
+<div class="card">
+<h2>Start Learning</h2>
+<p>Practice science questions and check their answers.</p>
+<button class="primary" onclick="page('study')">Start Practice</button>
+</div>
+</section>
+
+<section id="study" class="hidden">
+<h2>Question Practice</h2>
+
+<label>Choose Subject</label>
+<select id="subject" onchange="filterQuestions()">
+<option value="All">All Subjects</option>
+<option>Physics</option>
+<option>Chemistry</option>
+<option>Biology</option>
+</select>
+
+<label>Choose Class</label>
+<select id="grade" onchange="filterQuestions()">
+<option value="All">All Classes</option>
+<option>9</option><option>10</option>
+<option>11</option><option>12</option>
+</select>
+
+<div class="card">
+<p id="counter" class="muted"></p>
+<p id="question">Loading question...</p>
+<button class="primary" onclick="showAnswer()">Show Answer</button>
+<div id="answer" class="hidden"></div>
+<hr>
+<button onclick="previous()">Previous</button>
+<button class="primary" onclick="next()">Next</button>
+</div>
+</section>
+
+<section id="about" class="hidden">
+<div class="card">
+<h2>About StudySphere</h2>
+<p>StudySphere is a free educational platform created to help students learn Physics, Chemistry and Biology.</p>
+<h3>Founder</h3>
+<p><b>Kapil Raj Chohan</b></p>
+<p class="muted">Founder of StudySphere</p>
+</div>
+</section>
+</main>
+
+<footer>
+StudySphere © 2026<br>
+Created by Kapil Raj Chohan
+</footer>
+
+<script>
+const facts = {
+Physics: [
+["SI unit of force","Newton","Force is measured in newtons (N).",9],
+["SI unit of mass","Kilogram","The kilogram is the SI base unit of mass.",9],
+["SI unit of length","Metre","The metre is the SI base unit of length.",9],
+["SI unit of time","Second","The second is the SI base unit of time.",9],
+["Formula of speed","Distance divided by time","Speed = distance / time.",9],
+["Formula of acceleration","Change in velocity divided by time","Acceleration is the rate of change of velocity.",9],
+["SI unit of acceleration","m/s²","It is metre per second squared.",9],
+["Example of scalar quantity","Mass","A scalar has magnitude only.",9],
+["Example of vector quantity","Velocity","A vector has magnitude and direction.",9],
+["Formula of density","Mass divided by volume","Density = mass / volume.",9],
+["Formula of weight","W = mg","Weight is mass multiplied by gravitational acceleration.",9],
+["Newton's first law","Law of inertia","An object resists a change in its state of motion.",9],
+["SI unit of work","Joule","One joule equals one newton-metre.",9],
+["SI unit of power","Watt","Power is the rate of doing work.",9],
+["Formula of kinetic energy","½mv²","Kinetic energy depends on mass and speed squared.",9],
+["Formula of potential energy","mgh","Near Earth, gravitational potential energy = mgh.",9],
+["SI unit of frequency","Hertz","One hertz means one cycle per second.",10],
+["Wave speed formula","v = fλ","Wave speed equals frequency times wavelength.",10],
+["SI unit of current","Ampere","Electric current is measured in amperes.",10],
+["Ohm's law","V = IR","Voltage equals current multiplied by resistance.",10],
+["SI unit of resistance","Ohm","The symbol for ohm is Ω.",10],
+["Electric power formula","P = VI","Power equals voltage multiplied by current.",10],
+["Like electric charges","Repel each other","Like charges repel; unlike charges attract.",10],
+["Momentum formula","p = mv","Momentum equals mass multiplied by velocity.",11],
+["SI unit of momentum","kg m/s","Momentum is measured in kilogram metre per second.",11],
+["Impulse","Change in momentum","Impulse equals force multiplied by time interval.",11],
+["Centripetal acceleration direction","Towards the centre","It points towards the centre of circular motion.",11],
+["Ideal gas equation","PV = nRT","It relates pressure, volume, temperature and amount of gas.",11],
+["SHM restoring force","F = -kx","For an ideal spring, restoring force opposes displacement.",11],
+["SI unit of temperature","Kelvin","Kelvin is the SI base unit of temperature.",11],
+["Photon energy formula","E = hf","Photon energy equals Planck's constant times frequency.",12],
+["Faraday's law","Electromagnetic induction","Changing magnetic flux induces an electromotive force.",12],
+["Nuclear fission","Splitting of a heavy nucleus","Fission can release energy and neutrons.",12],
+["Nuclear fusion","Combining light nuclei","Fusion powers the Sun and other stars.",12]
+],
+Chemistry: [
+["Smallest unit of an element","Atom","An atom retains the chemical identity of an element.",9],
+["Atomic number","Number of protons","Atomic number is the proton number.",9],
+["Mass number","Protons plus neutrons","Mass number counts nucleons in the nucleus.",9],
+["Charge of electron","Negative","An electron has a negative elementary charge.",9],
+["Charge of proton","Positive","A proton has a positive elementary charge.",9],
+["Charge of neutron","Zero","A neutron is electrically neutral.",9],
+["Isotopes differ in","Number of neutrons","Isotopes have the same proton number.",9],
+["Formula of water","H₂O","A water molecule has two hydrogen atoms and one oxygen atom.",9],
+["Formula of oxygen gas","O₂","An oxygen molecule contains two oxygen atoms.",9],
+["Symbol of sodium","Na","Na comes from the Latin name natrium.",9],
+["Symbol of potassium","K","K comes from the Latin name kalium.",9],
+["Symbol of iron","Fe","Fe comes from the Latin word ferrum.",9],
+["Neutral pH at 25°C","7","Pure water is neutral at 25°C.",10],
+["Acids increase","Hydronium ions","Acids increase H₃O⁺ concentration in water.",10],
+["Bases increase","Hydroxide ions","Arrhenius bases increase OH⁻ in water.",10],
+["A catalyst changes","Reaction rate","A catalyst provides an alternative reaction pathway.",10],
+["Exothermic reaction","Releases heat","Its enthalpy change is negative.",10],
+["Endothermic reaction","Absorbs heat","Its enthalpy change is positive.",10],
+["Covalent bond","Sharing of electron pairs","Covalent bonds involve shared electron pairs.",10],
+["Ionic bond","Attraction between oppositely charged ions","Ionic bonding involves cations and anions.",10],
+["Avogadro constant","6.022 × 10²³","This is the number of entities in one mole.",10],
+["Oxidation","Loss of electrons","Oxidation is loss of electrons.",11],
+["Reduction","Gain of electrons","Reduction is gain of electrons.",11],
+["Ideal gas equation","PV = nRT","R represents the universal gas constant.",11],
+["Electronegativity","Attraction for shared electrons","It describes an atom's attraction for bonding electrons.",11],
+["Methane shape","Tetrahedral","Methane has four bonding pairs around carbon.",11],
+["Methane hybridization","sp³","Carbon forms four equivalent hybrid orbitals in methane.",11],
+["ATP full form","Adenosine triphosphate","ATP transfers energy in cells.",11],
+["Alcohol functional group","Hydroxyl group","The functional group is written as -OH.",12],
+["Carboxylic acid group","-COOH","This is called the carboxyl group.",12],
+["Benzene formula","C₆H₆","Benzene is an aromatic compound.",12],
+["Glucose formula","C₆H₁₂O₆","Glucose is a monosaccharide.",12],
+["Polymerization","Joining monomers into polymers","Polymers consist of repeating molecular units.",12],
+["Electrolysis","Electrical energy drives chemical change","Electrolysis is a non-spontaneous redox process.",12]
+],
+Biology: [
+["Basic unit of life","Cell","The cell is the basic structural and functional unit of life.",9],
+["Function of cell membrane","Controls movement of substances","The membrane is selectively permeable.",9],
+["Function of nucleus","Controls cell activities","The nucleus contains most genetic material.",9],
+["Function of mitochondria","Aerobic respiration","Mitochondria produce much of the cell's ATP.",9],
+["Function of ribosomes","Protein synthesis","Ribosomes make proteins.",9],
+["Function of chloroplast","Photosynthesis","Chloroplasts contain photosynthetic pigments.",9],
+["Plant cell wall material","Cellulose","Cellulose provides strength and support.",9],
+["Diffusion","Movement from high to low concentration","Diffusion occurs down a concentration gradient.",9],
+["Osmosis","Movement of water across a selectively permeable membrane","Osmosis is a special type of diffusion.",9],
+["Enzymes","Biological catalysts","They speed up chemical reactions.",9],
+["Main pigment of photosynthesis","Chlorophyll","Chlorophyll absorbs light energy.",10],
+["Gas released in photosynthesis","Oxygen","Oxygen is released when water is split.",10],
+["Aerobic respiration requires","Oxygen","Oxygen is the final electron acceptor.",10],
+["Blood cells carrying oxygen","Red blood cells","Haemoglobin carries oxygen.",10],
+["Blood clotting component","Platelets","Platelets help form blood clots.",10],
+["Functional unit of kidney","Nephron","Nephrons filter blood and form urine.",10],
+["Insulin is produced by","Beta cells of pancreatic islets","Insulin helps regulate blood glucose.",10],
+["Basic signalling cell of nervous system","Neuron","Neurons transmit signals.",10],
+["DNA full form","Deoxyribonucleic acid","DNA stores hereditary information.",11],
+["RNA full form","Ribonucleic acid","RNA has roles in gene expression.",11],
+["DNA base pairs","A-T and C-G","Adenine pairs with thymine; cytosine pairs with guanine.",11],
+["Mitosis produces","Two genetically similar daughter cells","Mitosis supports growth and repair.",11],
+["Meiosis produces","Haploid cells","Meiosis reduces chromosome number by half.",11],
+["Human body cell chromosomes","46","They are arranged in 23 pairs.",11],
+["ATP full form","Adenosine triphosphate","ATP is an energy-transfer molecule.",11],
+["Human heart chambers","Four","The heart has two atria and two ventricles.",12],
+["Gas exchange in lungs","Alveoli","Alveoli have thin walls for gas exchange.",12],
+["Antibodies are produced by","Plasma cells","Plasma cells develop from B lymphocytes.",12],
+["Vaccination creates","Immune memory","Vaccines prepare the immune system for future exposure.",12],
+["Homeostasis","Stable internal environment","Homeostasis maintains internal conditions within limits.",12],
+["Blood glucose hormones","Insulin and glucagon","These hormones help regulate blood glucose.",12],
+["Ecology studies","Organisms and their environment","Ecology studies interactions in the natural world.",12]
+]
+};
+
+let bank=[];
+function addQuestions(subject,entries,target){
+ entries.forEach((f,i)=>{
+  const [topic,answer,explanation,grade]=f;
+  const formats=[
+   ["What is "+topic+"? ",answer],
+   ["State the answer related to "+topic+". ",answer],
+   ["Complete the revision point: "+topic+" = ? ",answer],
+   ["Explain briefly: "+topic+". ",answer+". "+explanation],
+   ["Write a one-line note about "+topic+". ",answer+". "+explanation]
+  ];
+  formats.forEach((x,j)=>{
+   bank.push({subject,grade,q:x[0],a:x[1],why:explanation});
+  });
+ });
+ bank=bank.slice(0,target);
+}
+addQuestions("Physics",facts.Physics,170);
+addQuestions("Chemistry",facts.Chemistry,170);
+addQuestions("Biology",facts.Biology,160);
+
+let filtered=bank;
+let position=0;
+
+function page(id,btn){
+ document.querySelectorAll("main section").forEach(s=>s.classList.add("hidden"));
+ document.getElementById(id).classList.remove("hidden");
+ document.querySelectorAll("nav button").forEach(b=>b.classList.remove("active"));
+ if(btn)btn.classList.add("active");
+}
+function filterQuestions(){
+ const s=document.getElementById("subject").value;
+ const g=document.getElementById("grade").value;
+ filtered=bank.filter(q=>(s==="All"||q.subject===s)&&(g==="All"||String(q.grade)===g));
+ position=0;
+ render();
+}
+function render(){
+ const q=filtered[position];
+ document.getElementById("answer").classList.add("hidden");
+ if(!q){
+  document.getElementById("question").textContent="No questions found.";
+  document.getElementById("counter").textContent="0 questions";
+  return;
+ }
+ document.getElementById("counter").textContent=
+ "Question "+(position+1)+" of "+filtered.length+" • "+q.subject+" • Class "+q.grade;
+ document.getElementById("question").textContent=q.q;
+ document.getElementById("answer").innerHTML="<b>Answer:</b> "+q.a+
+ "<br><br><b>Explanation:</b> "+q.why;
+}
+function showAnswer(){
+ document.getElementById("answer").classList.remove("hidden");
+}
+function next(){
+ if(filtered.length){position=(position+1)%filtered.length;render();}
+}
+function previous(){
+ if(filtered.length){position=(position-1+filtered.length)%filtered.length;render();}
+}
+render();
+</script>
+</body>
+</html>
