@@ -3,780 +3,351 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#101323">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#10172b">
 <title>StudySphere | Learn Without Limits</title>
-<link rel="manifest" href="manifest.json">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-:root{--bg:#0b1020;--panel:#171e33;--panel2:#222d49;--text:#f5f6ff;--muted:#aab4ce;--accent:#8b7cff;--green:#43d6a0}
+:root{--bg:#0b1020;--panel:#141d32;--panel2:#1b2944;--line:#2b3b59;--txt:#eef3ff;--muted:#a5b2ca;--blue:#8aa7ff;--cyan:#65dfd2;--gold:#ffd27a}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,sans-serif}
-header{padding:24px 18px;background:linear-gradient(135deg,#29265b,#151c35)}
-.brand{font-size:27px;font-weight:800}.brand span{color:#a99cff}
-header p{color:#c5c9e0;margin:8px 0 0}
-main{max-width:900px;margin:auto;padding:17px}
-h2{font-size:21px;margin:22px 0 12px}
-h3{margin:8px 0}
-p{line-height:1.6}
-.muted{color:var(--muted);font-size:13px}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
-.card,.item{background:var(--panel);border:1px solid #2b3654;border-radius:16px;padding:15px}
-.card p,.item p{color:var(--muted);font-size:13px}
-button{border:0;border-radius:11px;padding:12px 15px;background:var(--accent);color:white;font-weight:bold;cursor:pointer}
-button.secondary{background:var(--panel2);border:1px solid #394767}
-button:disabled{opacity:.5}
-input{font:inherit}
-nav{display:flex;gap:8px;overflow:auto;padding:12px 0}
-nav button{white-space:nowrap}
-.actions{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
-.item{margin:10px 0}
-.item button{margin-top:8px}
-.hidden{display:none!important}
-.tag{font-size:11px;color:var(--green);font-weight:bold;letter-spacing:1px}
-.lesson{line-height:1.8;color:#e0e5f5}
-.lesson h3{color:#b9adff;margin-top:20px}
-.lesson li{margin:8px 0}
-.search{width:100%;padding:14px;border-radius:12px;background:var(--panel);border:1px solid #394767;color:white;margin:12px 0}
-.progress{height:7px;background:#303a55;border-radius:9px;overflow:hidden}
-.progress div{height:100%;background:var(--green);width:0}
-footer{text-align:center;color:var(--muted);padding:28px;font-size:12px}
-.auth-wrap{max-width:440px;margin:35px auto;padding:18px}
-.auth-card{background:var(--panel);border:1px solid #394767;border-radius:20px;padding:22px}
-.auth-input{display:block;width:100%;padding:14px;margin:12px 0;background:#0b1020;border:1px solid #394767;border-radius:11px;color:white}
-.auth-card button{width:100%;margin:7px 0}
-.auth-message{font-size:13px;line-height:1.5;color:var(--green);min-height:20px}
-.auth-switch{color:#b9adff;text-decoration:underline;cursor:pointer}
-.userbar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;background:var(--panel);padding:12px;border-radius:13px}
-@media(max-width:420px){main{padding:13px}.card{padding:12px}.grid{gap:8px}}
-
-.premium-panel{background:linear-gradient(135deg,#29265b,#171e33);border:1px solid #6659b8;border-radius:18px;padding:17px;margin:14px 0}
-.form-field{display:block;width:100%;padding:13px;margin:9px 0;background:#0b1020;border:1px solid #394767;border-radius:11px;color:white}
-.status-pill{display:inline-block;padding:5px 9px;border-radius:20px;background:#303a55;color:#e9eaff;font-size:12px;font-weight:bold}
-.status-active{background:#14533f;color:#b9ffe3}
-.status-pending{background:#59451a;color:#ffe5a3}
-.status-rejected{background:#572c38;color:#ffc4d0}
-.receipt-link{color:#b9adff;word-break:break-all}
-
+body{margin:0;background:radial-gradient(ellipse at 85% 0,#20335b 0,transparent 38%),var(--bg);color:var(--txt);font:15px/1.55 system-ui,Arial,sans-serif}
+button,input,select{font:inherit}
+button{cursor:pointer;border:0}
+.app{max-width:1250px;margin:auto;padding:18px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 2px 20px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:850;font-size:21px}
+.logo{width:40px;height:40px;border-radius:13px;background:linear-gradient(135deg,var(--blue),var(--cyan));display:grid;place-items:center;color:#10172b;font-weight:950}
+.header-right{color:var(--muted);font-size:13px}
+nav{display:flex;gap:7px;overflow:auto;padding:8px;background:#10182a;border:1px solid var(--line);border-radius:15px;margin-bottom:18px}
+nav button{white-space:nowrap;background:transparent;color:var(--muted);padding:10px 14px;border-radius:10px;font-weight:700}
+nav button.active,nav button:hover{background:var(--panel2);color:white}
+main{min-height:65vh}
+.view{display:none}
+.view.active{display:block}
+.hero{padding:28px;border-radius:22px;border:1px solid #405783;background:linear-gradient(120deg,#263f70,#18364a);display:flex;justify-content:space-between;align-items:center;gap:18px}
+.hero h1{font-size:clamp(26px,5vw,40px);line-height:1.12;margin:7px 0 12px}
+.hero p{color:#d0dcef;max-width:620px;margin:0 0 18px}
+.hero-icon{font-size:72px}
+.kicker{font-size:11px;letter-spacing:1.6px;text-transform:uppercase;color:var(--cyan);font-weight:800}
+.btn{background:linear-gradient(135deg,var(--blue),#a5baff);color:#10172b;padding:10px 15px;border-radius:11px;font-weight:800}
+.btn.secondary{background:var(--panel2);color:var(--txt);border:1px solid var(--line)}
+.btn.gold{background:linear-gradient(135deg,#f6c76f,#ffe1a2)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:15px 0 24px}
+.stat,.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:17px}
+.stat strong{display:block;font-size:25px}
+.muted{color:var(--muted)}
+.section-title{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:22px 0 13px}
+.section-title h2{font-size:20px;margin:0}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
+.subject{padding:0;overflow:hidden}
+.subject-top{height:90px;display:grid;place-items:center;font-size:40px;background:linear-gradient(135deg,#293e70,#205c68)}
+.subject:nth-child(2) .subject-top{background:linear-gradient(135deg,#553d77,#965779)}
+.subject:nth-child(3) .subject-top{background:linear-gradient(135deg,#315e4b,#87994d)}
+.subject-body{padding:15px}
+.subject h3{margin:0 0 4px}
+.subject p{margin:0 0 12px;color:var(--muted);font-size:13px}
+.chip{background:#20364d;color:#bce9e2;padding:5px 9px;border-radius:30px;font-size:12px;display:inline-block;margin:3px}
+.list{display:grid;gap:10px}
+.item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px;background:var(--panel);border:1px solid var(--line);border-radius:13px}
+.item strong{display:block}
+.item small{color:var(--muted)}
+.item-actions{display:flex;gap:7px;flex-wrap:wrap}
+.lesson-content{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px;margin-top:14px}
+.lesson-content h2{margin-top:0}
+.lesson-content h3{color:var(--cyan)}
+.lesson-content p{color:#d6dfef}
+.field{display:grid;gap:6px;margin:12px 0}
+.field input,.field select{width:100%;padding:12px;border-radius:10px;border:1px solid var(--line);background:#0d1527;color:var(--txt)}
+.notice{background:#1c2b46;border:1px solid #3b5278;border-radius:12px;padding:13px;color:#d0dcef;font-size:13px;margin:13px 0}
+.price{font-size:43px;font-weight:900}
+.price small{font-size:14px;color:var(--muted);font-weight:500}
+footer{padding:25px 4px;color:#8594af;font-size:12px;border-top:1px solid var(--line);margin-top:30px}
+@media(max-width:750px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.hero-icon{font-size:48px}.app{padding:12px}}
+@media(max-width:520px){.grid,.stats{grid-template-columns:1fr}.hero{padding:20px}.hero-icon{display:none}.item{align-items:flex-start;flex-direction:column}.item-actions{width:100%}}
 </style>
 </head>
 <body>
-
+<div class="app">
 <header>
- <div class="brand">Study<span>Sphere</span> ✦</div>
- <p>Learn Without Limits • Sindh Board • Class 9–12</p>
+<div class="brand"><div class="logo">S</div>StudySphere</div>
+<div class="header-right">Learn • Practice • Grow</div>
 </header>
 
-<!-- AUTHENTICATION -->
-<section id="authScreen" class="auth-wrap">
- <div class="auth-card">
-  <div class="brand">Study<span>Sphere</span> ✦</div>
-  <h2 id="authTitle">Welcome Back!</h2>
-  <p class="muted" id="authDescription">Login to continue your learning journey.</p>
+<nav id="nav">
+<button class="active" data-view="home">⌂ Home</button>
+<button data-view="science">📚 Science</button>
+<button data-view="english">🔤 English Academy</button>
+<button data-view="saved">⬇ Saved Offline</button>
+<button data-view="premium">♛ Premium</button>
+</nav>
 
-  <form id="authForm">
-   <input class="auth-input" id="authName" placeholder="Your full name" autocomplete="name" style="display:none">
-   <input class="auth-input" id="authEmail" type="email" placeholder="Gmail address" autocomplete="email" required>
-   <input class="auth-input" id="authPassword" type="password" placeholder="Password (minimum 6 characters)" autocomplete="current-password" required>
-   <button id="authSubmit" type="submit">Login</button>
-  </form>
+<main>
+<section class="view active" id="home">
+<div class="hero">
+<div>
+<div class="kicker">Your learning journey</div>
+<h1>Build your future, one lesson at a time.</h1>
+<p>Study Sindh Board Physics, Chemistry and Biology from Class 9 to 12, and improve your English from beginner to advanced.</p>
+<button class="btn" onclick="showView('science')">Explore subjects →</button>
+</div>
+<div class="hero-icon">📚</div>
+</div>
 
-  <button class="secondary" id="forgotBtn" type="button" onclick="forgotPassword()">Forgot Password?</button>
-  <p class="muted" style="text-align:center" id="switchText">
-   New student? <span class="auth-switch" onclick="setAuthMode('signup')">Create Account</span>
-  </p>
-  <p class="auth-message" id="authMessage"></p>
- </div>
+<div class="stats">
+<div class="stat"><span class="muted">Science subjects</span><strong>3</strong><small class="muted">Physics • Chemistry • Biology</small></div>
+<div class="stat"><span class="muted">Classes</span><strong>9–12</strong><small class="muted">Sindh Board pathway</small></div>
+<div class="stat"><span class="muted">Offline saves</span><strong id="savedCount">0</strong><small class="muted">On this device</small></div>
+</div>
+
+<div class="section-title"><h2>Start learning</h2></div>
+<div class="grid">
+<div class="card subject"><div class="subject-top">⚛️</div><div class="subject-body"><h3>Physics</h3><p>Measurements, motion, force and energy.</p><button class="btn secondary" onclick="openSubject('Physics')">Open Physics</button></div></div>
+<div class="card subject"><div class="subject-top">🧪</div><div class="subject-body"><h3>Chemistry</h3><p>Atoms, matter, bonding and reactions.</p><button class="btn secondary" onclick="openSubject('Chemistry')">Open Chemistry</button></div></div>
+<div class="card subject"><div class="subject-top">🧬</div><div class="subject-body"><h3>Biology</h3><p>Cells, life processes and organisms.</p><button class="btn secondary" onclick="openSubject('Biology')">Open Biology</button></div></div>
+</div>
 </section>
 
-<!-- MAIN APP -->
-<div id="app" class="hidden">
- <main>
-  <div class="userbar">
-   <div>
-    <strong>Student Account</strong>
-    <div class="muted" id="studentEmail"></div>
-   </div>
-   <button class="secondary" onclick="logout()">Logout</button>
-  </div>
+<section class="view" id="science">
+<div class="section-title"><h2>Science courses</h2><span class="muted">Select class and subject</span></div>
+<div class="field">
+<label for="grade">Choose class</label>
+<select id="grade" onchange="renderSubjects()">
+<option value="9">Class 9</option>
+<option value="10">Class 10</option>
+<option value="11">Class 11</option>
+<option value="12">Class 12</option>
+</select>
+</div>
+<div class="grid" id="subjectGrid"></div>
+</section>
 
-  <nav>
-   <button onclick="home()">Home</button>
-   <button class="secondary" onclick="savedPage()">Saved Offline</button>
-   <button class="secondary" onclick="englishPage()">English Academy</button>
-  </nav>
-  <div class="muted" id="network">Checking connection...</div>
+<section class="view" id="chapters">
+<div class="section-title"><h2 id="chapterHeading">Chapters</h2><button class="btn secondary" onclick="showView('science')">← Back</button></div>
+<div class="list" id="chapterList"></div>
+</section>
 
-  <section id="home">
-   <h2>Welcome to StudySphere 👋</h2>
-   <p class="muted">Choose your class and explore your subjects.</p>
-   <div class="grid" id="grades"></div>
-   <h2>English Academy</h2>
-   <div class="card">
-    <h3>English: Beginner to Advanced</h3>
-    <p>Grammar • Vocabulary • Reading • Writing • Listening • Speaking</p>
-    <button onclick="englishPage()">Start English</button>
-   </div>
-   <h2>Your Learning Progress</h2>
-   <div class="card">
-    <strong id="progressCount">0 lessons saved</strong>
-    <p class="muted">Saved lessons remain available on this device.</p>
-    <div class="progress"><div id="progressBar"></div></div>
-   </div>
-  </section>
+<section class="view" id="reader">
+<div class="section-title"><h2 id="readerTitle">Lesson</h2><button class="btn secondary" onclick="showView('chapters')">← Chapters</button></div>
+<div class="lesson-content" id="lessonBody"></div>
+</section>
 
-  <section id="subjects" class="hidden">
-   <button class="secondary" onclick="home()">← Home</button>
-   <h2 id="subjectHeading"></h2>
-   <div class="grid" id="subjectGrid"></div>
-  </section>
+<section class="view" id="english">
+<div class="section-title"><h2>English Academy</h2><span class="muted">Basics to advanced</span></div>
+<div class="grid" id="englishGrid"></div>
+</section>
 
-  <section id="chapters" class="hidden">
-   <button class="secondary" onclick="backSubjects()">← Subjects</button>
-   <h2 id="chapterHeading"></h2>
-   <input class="search" id="chapterSearch" placeholder="Search chapters..." oninput="filterChapters()">
-   <div id="chapterList"></div>
-  </section>
+<section class="view" id="saved">
+<div class="section-title"><h2>Saved Offline</h2><span class="muted">Stored on this device</span></div>
+<div class="notice">Save lessons while online, then revisit them here. Offline access depends on your browser keeping this website's data.</div>
+<div class="list" id="savedList"></div>
+</section>
 
-  <section id="reader" class="hidden">
-   <div class="actions">
-    <button class="secondary" onclick="backChapters()">← Chapters</button>
-    <button onclick="saveCurrent()">Save Offline ↓</button>
-   </div>
-   <div class="card">
-    <div class="tag" id="lessonTag">STUDYSPHERE LESSON</div>
-    <h2 id="lessonTitle"></h2>
-    <div id="lessonBody" class="lesson"></div>
-    <p class="muted" id="lessonStatus"></p>
-   </div>
-  </section>
-
-  <section id="saved" class="hidden">
-   <h2>Saved for Offline</h2>
-   <p class="muted">These lessons are stored on this phone.</p>
-   <div id="savedList"></div>
-  </section>
-
-  <section id="english" class="hidden">
-   <button class="secondary" onclick="home()">← Home</button>
-   <h2>English Academy</h2>
-   <p class="muted">Start from the foundation and move towards advanced English.</p>
-   <div id="englishList"></div>
-  </section>
- </main>
- <footer>StudySphere • Keep learning, keep growing.</footer>
+<section class="view" id="premium">
+<div class="card" style="max-width:580px;margin:20px auto;text-align:center">
+<div class="kicker">StudySphere Premium</div>
+<h2>Take your learning further</h2>
+<div class="price">Rs. 200 <small>/ 30 days</small></div>
+<p class="muted">Premium access is activated only after an administrator verifies the payment.</p>
+<div class="notice">Payment details and approval will be connected after the core lessons are confirmed working. Do not send money to an unverified account or share any PIN/OTP.</div>
+<button class="btn gold" onclick="alert('Premium payment setup will be connected after the lesson system is tested.')">Premium setup</button>
+</div>
+</section>
+</main>
+<footer>© 2026 StudySphere • Learn with curiosity. Grow with confidence.</footer>
 </div>
 
 <script>
-const SUPABASE_URL="https://qsxfcvlqyxjjgpapoesr.supabase.co";
-const SUPABASE_KEY="sb_publishable_3liY4myr_WFdvIfcNRsIxA_qPFLbwl7";
-const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const subjectIcons={Physics:'⚛️',Chemistry:'🧪',Biology:'🧬'};
 
-let authMode="login";
-let currentSession=null;
-let recoveryMode=false;
-
-const authForm=document.getElementById("authForm");
-
-function setAuthMode(mode){
- authMode=mode;
- recoveryMode=false;
- $("authMessage").textContent="";
- $("authName").style.display=mode==="signup"?"block":"none";
- $("authPassword").style.display="block";
- $("authPassword").required=true;
- $("authEmail").style.display="block";
- $("authTitle").textContent=mode==="signup"?"Create Your Account":"Welcome Back!";
- $("authDescription").textContent=mode==="signup"?"Join StudySphere and start learning.":"Login to continue your learning journey.";
- $("authSubmit").textContent=mode==="signup"?"Create Account":"Login";
- $("forgotBtn").style.display=mode==="login"?"block":"none";
- $("switchText").innerHTML=mode==="signup"?
- 'Already have an account? <span class="auth-switch" onclick="setAuthMode(\'login\')">Login</span>':
- 'New student? <span class="auth-switch" onclick="setAuthMode(\'signup\')">Create Account</span>';
-}
-
-authForm.addEventListener("submit",async e=>{
- e.preventDefault();
- const email=$("authEmail").value.trim();
- const password=$("authPassword").value;
- const message=$("authMessage");
- const btn=$("authSubmit");
- btn.disabled=true;
- message.textContent="Please wait...";
-
- try{
-  if(recoveryMode){
-   const {error}=await supabaseClient.auth.updateUser({password});
-   if(error)throw error;
-   recoveryMode=false;
-   setAuthMode("login");
-   message.textContent="Password updated. Please log in.";
-  }
-  else if(authMode==="signup"){
-   if(password.length<6)throw new Error("Password must be at least 6 characters.");
-   const name=$("authName").value.trim();
-   const {data,error}=await supabaseClient.auth.signUp({
-    email,password,
-    options:{
-     data:{full_name:name},
-     emailRedirectTo:window.location.origin+window.location.pathname
-    }
-   });
-   if(error)throw error;
-   if(data.session){
-    message.textContent="Account created!";
-   }else{
-    message.textContent="Account created. Please check your email and verify your account before logging in.";
-    setAuthMode("login");
-   }
-  }else{
-   const {error}=await supabaseClient.auth.signInWithPassword({email,password});
-   if(error)throw error;
-   message.textContent="Login successful!";
-  }
- }catch(error){
-  message.textContent=error.message;
- }finally{
-  btn.disabled=false;
- }
-});
-
-async function forgotPassword(){
- const email=$("authEmail").value.trim();
- if(!email){
-  $("authMessage").textContent="Please enter your email address first.";
-  return;
- }
- $("authMessage").textContent="Sending reset email...";
- try{
-  const {error}=await supabaseClient.auth.resetPasswordForEmail(email,{
-   redirectTo:window.location.origin+window.location.pathname
-  });
-  if(error)throw error;
-  $("authMessage").textContent="Password reset link sent. Check your email.";
- }catch(error){
-  $("authMessage").textContent=error.message;
- }
-}
-
-async function logout(){
- await supabaseClient.auth.signOut();
-}
-
-function showApp(session){
- currentSession=session;
- $("authScreen").classList.add("hidden");
- $("app").classList.remove("hidden");
- $("studentEmail").textContent=session.user.email||"Student";
- init();
-}
-
-function showLogin(){
- currentSession=null;
- $("app").classList.add("hidden");
- $("authScreen").classList.remove("hidden");
-}
-
-supabaseClient.auth.onAuthStateChange((event,session)=>{
- if(event==="PASSWORD_RECOVERY"){
-  showLogin();
-  recoveryMode=true;
-  $("authTitle").textContent="Set New Password";
-  $("authDescription").textContent="Enter your new password below.";
-  $("authName").style.display="none";
-  $("authEmail").style.display="none";
-  $("authPassword").style.display="block";
-  $("authPassword").required=true;
-  $("authSubmit").textContent="Update Password";
-  $("forgotBtn").style.display="none";
-  $("switchText").textContent="";
-  $("authMessage").textContent="";
- }
- if(session)showApp(session);
- else showLogin();
-});
-
-(async()=>{
- const {data}=await supabaseClient.auth.getSession();
- if(data.session)showApp(data.session);
- else showLogin();
-})();
-
-const courses = {
-"9th Class":{
- Physics:["Physical Quantities and Measurement","Kinematics","Dynamics","Turning Effect of Forces","Forces and Matter","Gravitation","Properties of Matter","Energy Sources and Transfer of Energy","Thermal Properties of Matter"],
- Chemistry:["Fundamentals of Chemistry","Atomic Structure","Periodic Table and Periodicity of Properties","Chemical Bonding","Physical States of Matter","Solutions","Electrochemistry","Chemical Reactivity"],
- Biology:["Introduction to Biology","Solving a Biological Problem","Biodiversity","Cells and Tissues","Cell Cycle","Enzymes","Bioenergetics","Nutrition","Transport"]
+const chapterData={
+9:{
+Physics:['Physical quantities and measurement','Kinematics','Dynamics','Turning effect of forces','Gravitation','Work and energy','Properties of matter','Thermal properties of matter','Transfer of heat'],
+Chemistry:['Fundamentals of Chemistry','Structure of atoms','Periodic table and periodicity','Chemical bonding','Physical states of matter','Solutions','Electrochemistry','Chemical reactivity'],
+Biology:['Introduction to Biology','Solving a biological problem','Biodiversity','Cells and tissues','Cell cycle','Enzymes','Bioenergetics','Nutrition','Transport']
 },
-"10th Class":{
- Physics:["Simple Harmonic Motion and Waves","Sound","Geometrical Optics","Electrostatics","Current Electricity","Electromagnetism","Basic Electronics","Information and Communication Technology","Atomic and Nuclear Physics"],
- Chemistry:["Chemical Equilibrium","Acids, Bases and Salts","Organic Chemistry","Hydrocarbons","Biochemistry","The Atmosphere","Water","Chemical Industries"],
- Biology:["Gaseous Exchange","Homeostasis","Coordination and Control","Support and Movement","Reproduction","Inheritance","Man and His Environment","Biotechnology","Biology and Human Welfare"]
+10:{
+Physics:['Simple harmonic motion and waves','Sound','Geometrical optics','Electrostatics','Current electricity','Electromagnetism','Basic electronics','Information and communication technology','Atomic and nuclear physics'],
+Chemistry:['Chemical equilibrium','Acids, bases and salts','Organic chemistry','Hydrocarbons','Biochemistry','The atmosphere','Water','Chemical industries'],
+Biology:['Gaseous exchange','Homeostasis','Coordination and control','Support and movement','Reproduction','Inheritance','Man and his environment','Biotechnology','Pharmacology']
 },
-"11th Class":{
- Physics:["Measurements","Vectors and Equilibrium","Motion and Force","Work and Energy","Circular Motion","Fluid Dynamics","Oscillations","Waves","Physical Optics","Heat and Thermodynamics","Electrostatics","Current Electricity","Electromagnetism","Electronics and Communication"],
- Chemistry:["Stoichiometry","Atomic Structure","Chemical Bonding","The Gaseous State","The Liquid State","The Solid State","Chemical Equilibrium","Acids, Bases and Salts","Chemical Kinetics","Solutions and Colloids","Thermochemistry","Electrochemistry","Introduction to Organic Chemistry","Chemistry of Hydrocarbons"],
- Biology:["The Biology","Biological Molecules","Enzymes","The Cell","The Variety of Life","Monera","Protista","The Kingdom Fungi","The Kingdom Plantae","The Kingdom Animalia","Forms and Functions in Plants","Holozoic Nutrition","Circulation","Immunity and Gaseous Exchange"]
+11:{
+Physics:['Measurements','Vectors and equilibrium','Motion and force','Work and energy','Circular motion','Fluid dynamics','Oscillations','Waves','Physical optics','Optical instruments'],
+Chemistry:['Basic concepts','Experimental techniques','Gases','Liquids and solids','Atomic structure','Chemical bonding','Thermochemistry','Chemical equilibrium','Solutions','Electrochemistry'],
+Biology:['Introduction to biology','Biological molecules','Enzymes','The cell','Variety of life','Kingdom prokaryotae','Kingdom protista','Fungi','Kingdom plantae','Kingdom animalia']
 },
-"12th Class":{
- Physics:["Molecular Theory of Gases","First Law of Thermodynamics","Second Law of Thermodynamics","Magnetic Fields","Electromagnetic Induction","Alternating Current","Physics of Solids","Solid State Electronics","Digital Electronics","Relativity","Quantum Physics","Atomic Physics","Nuclear Physics","Particle Physics"],
- Chemistry:["s-Block Elements","p-Block Elements","d- and f-Block Elements","Fundamental Principles of Organic Chemistry","Aliphatic Hydrocarbons","Aromatic Hydrocarbons","Alkyl Halides","Alcohols, Phenols and Ethers","Aldehydes and Ketones","Carboxylic Acids","Macromolecules","Environmental Chemistry","Industrial Chemistry","Analytical Chemistry"],
- Biology:["Homeostasis","Support and Movement","Nervous Coordination","Chemical Coordination","Animal Behaviour","Reproduction","Development and Aging","Chromosome and DNA","Inheritance","Evolution","Man and His Environment","Biotechnology","Biology and Human Welfare"]
+12:{
+Physics:['Electrostatics','Current electricity','Electromagnetism','Electromagnetic induction','Alternating current','Physics of solids','Electronics','Dawn of modern physics','Atomic spectra','Nuclear physics'],
+Chemistry:['Periodic classification','s-block elements','Group IIIA and IVA elements','Group VA and VIA elements','The halogens and noble gases','Transition elements','Fundamental principles of organic chemistry','Aliphatic hydrocarbons','Aromatic hydrocarbons','Alkyl halides'],
+Biology:['Homeostasis','Support and movement','Coordination and control','Reproduction','Growth and development','Chromosomes and DNA','Cell cycle','Variation and genetics','Biotechnology','Evolution']
 }
 };
 
-const englishLevels=[
-["Foundation","Alphabet, sounds, nouns, pronouns, verbs and simple sentences."],
-["Beginner","Articles, adjectives, prepositions, basic tenses and daily vocabulary."],
-["Elementary","Sentence structure, questions, negatives, everyday conversations."],
-["Intermediate","All major tenses, modals, active/passive voice and paragraph writing."],
-["Upper Intermediate","Reported speech, conditionals, comprehension and fluent conversations."],
-["Advanced","Advanced grammar, essay writing, presentations, debates and critical reading."],
-["Expert Practice","Academic English, professional communication, listening and speaking practice."]
+const intro={
+'Physical quantities and measurement':'Physics uses measurable quantities to describe nature. A physical quantity has a numerical value and a unit. Examples include length, mass, time and temperature.',
+'Introduction to Biology':'Biology is the scientific study of living organisms. It explores their structure, functions, growth, origin and interactions with the environment.',
+'Fundamentals of Chemistry':'Chemistry is the study of matter, its composition, properties and the changes it undergoes. Matter has mass and occupies space.',
+'Measurements':'Measurement compares an unknown quantity with an accepted standard unit. A good measurement includes both a number and a unit.',
+'The cell':'The cell is the basic structural and functional unit of life. Some organisms consist of one cell, while others contain many specialized cells.'
+};
+
+let current={grade:'9',subject:'Physics',chapter:''};
+
+function showView(id){
+document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+const el=document.getElementById(id);
+if(el)el.classList.add('active');
+document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.view===id));
+window.scrollTo(0,0);
+if(id==='saved')renderSaved();
+}
+
+document.querySelectorAll('#nav button').forEach(b=>b.addEventListener('click',()=>showView(b.dataset.view)));
+
+function renderSubjects(){
+const g=document.getElementById('grade').value;
+const box=document.getElementById('subjectGrid');
+box.innerHTML=Object.keys(chapterData[g]).map(s=>`
+<article class="card subject">
+<div class="subject-top">${subjectIcons[s]}</div>
+<div class="subject-body">
+<h3>${s}</h3>
+<p>${chapterData[g][s].length} chapters • Class ${g}</p>
+<button class="btn secondary" onclick="openSubject('${s}')">View chapters</button>
+</div>
+</article>`).join('');
+}
+
+function openSubject(s){
+current.grade=document.getElementById('grade').value;
+current.subject=s;
+document.getElementById('chapterHeading').textContent=`Class ${current.grade} • ${s}`;
+document.getElementById('chapterList').innerHTML=chapterData[current.grade][s].map((c,i)=>`
+<div class="item">
+<div><strong>${i+1}. ${c}</strong><small>Class ${current.grade} • ${s}</small></div>
+<div class="item-actions">
+<button class="btn secondary" onclick="openLesson(${i})">Open lesson</button>
+<button class="btn" onclick="saveLesson(${i})">Save offline</button>
+</div>
+</div>`).join('');
+showView('chapters');
+}
+
+function lessonText(ch){
+return intro[ch]||`${ch} is an important topic in ${current.subject}. In this chapter, study the key definitions, basic principles, examples and applications. Make short notes, learn the important terms, and practise textbook questions to strengthen your understanding.`;
+}
+
+function openLesson(i){
+const ch=chapterData[current.grade][current.subject][i];
+current.chapter=ch;
+document.getElementById('readerTitle').textContent=ch;
+document.getElementById('lessonBody').innerHTML=`
+<div><span class="chip">Class ${current.grade}</span><span class="chip">${current.subject}</span><span class="chip">Study lesson</span></div>
+<h2>${ch}</h2>
+<h3>Introduction</h3>
+<p>${lessonText(ch)}</p>
+<h3>How to study this chapter</h3>
+<p>1. Read the textbook section carefully.<br>2. Write important definitions in your own words.<br>3. Review diagrams, formulas or examples.<br>4. Practise questions and revise your notes.</p>
+<div class="notice">This is a starter lesson outline. Full textbook-aligned notes and exercises can be added chapter by chapter.</div>
+<button class="btn" onclick="saveCurrentLesson()">Save this lesson offline</button>`;
+showView('reader');
+}
+
+function getSaved(){
+try{return JSON.parse(localStorage.getItem('ss_saved')||'[]')}
+catch(e){return []}
+}
+
+function saveLesson(i){
+const ch=chapterData[current.grade][current.subject][i];
+const data={grade:current.grade,subject:current.subject,chapter:ch,text:lessonText(ch)};
+const arr=getSaved();
+if(!arr.some(x=>x.grade===data.grade&&x.subject===data.subject&&x.chapter===data.chapter)){
+arr.push(data);
+localStorage.setItem('ss_saved',JSON.stringify(arr));
+}
+updateSavedCount();
+alert('Lesson saved on this device.');
+}
+
+function saveCurrentLesson(){
+const arr=getSaved();
+const data={grade:current.grade,subject:current.subject,chapter:current.chapter,text:lessonText(current.chapter)};
+if(!arr.some(x=>x.grade===data.grade&&x.subject===data.subject&&x.chapter===data.chapter))arr.push(data);
+localStorage.setItem('ss_saved',JSON.stringify(arr));
+updateSavedCount();
+alert('Lesson saved offline.');
+}
+
+function updateSavedCount(){
+document.getElementById('savedCount').textContent=getSaved().length;
+}
+
+function renderSaved(){
+const arr=getSaved();
+document.getElementById('savedList').innerHTML=arr.length?arr.map((x,i)=>`
+<div class="item">
+<div><strong>${x.chapter}</strong><small>Class ${x.grade} • ${x.subject}</small></div>
+<div class="item-actions">
+<button class="btn secondary" onclick="readSaved(${i})">Read</button>
+<button class="btn secondary" onclick="removeSaved(${i})">Remove</button>
+</div>
+</div>`).join(''):'<div class="card muted">No lessons saved yet. Open a chapter and tap Save offline.</div>';
+}
+
+function readSaved(i){
+const x=getSaved()[i];
+current={grade:x.grade,subject:x.subject,chapter:x.chapter};
+document.getElementById('readerTitle').textContent=x.chapter;
+document.getElementById('lessonBody').innerHTML=`
+<div><span class="chip">Class ${x.grade}</span><span class="chip">${x.subject}</span><span class="chip">Saved offline</span></div>
+<h2>${x.chapter}</h2><p>${x.text}</p>
+<div class="notice">This lesson is stored on this device.</div>`;
+showView('reader');
+}
+
+function removeSaved(i){
+const a=getSaved();
+a.splice(i,1);
+localStorage.setItem('ss_saved',JSON.stringify(a));
+renderSaved();
+updateSavedCount();
+}
+
+const english=[
+['Beginner','Alphabet, basic words, greetings, pronouns and simple sentences.'],
+['Elementary','Daily conversation, present/past/future tense and common vocabulary.'],
+['Pre-intermediate','Question forms, paragraphs, everyday speaking and listening.'],
+['Intermediate','Grammar practice, reading comprehension, writing and conversation.'],
+['Upper-intermediate','Fluent speaking, longer writing, vocabulary and presentations.'],
+['Advanced','Academic English, critical reading, formal writing and confident communication.']
 ];
 
-let grade="",subject="",chapter="",currentLesson=null;
-const $=id=>document.getElementById(id);
-const pages=["home","subjects","chapters","reader","saved","english","premium","admin"];
-
-function show(id){
- pages.forEach(p=>$(p).classList.add("hidden"));
- $(id).classList.remove("hidden");
- window.scrollTo(0,0);
-}
-function home(){show("home")}
-function backSubjects(){openGrade(grade)}
-function backChapters(){openSubject(subject)}
-
-function init(){
- $("grades").innerHTML=Object.keys(courses).map(g=>`
- <div class="card">
-  <div style="font-size:25px">📚</div>
-  <h3>${g}</h3>
-  <p>Physics • Chemistry • Biology</p>
-  <button onclick="openGrade('${g}')">Explore Class</button>
- </div>`).join("");
- updateNetwork();
- updateProgress();
-}
-function updateNetwork(){
- $("network").textContent=navigator.onLine?
- "🟢 Online — you can open new chapters.":
- "🟠 Offline — only saved lessons can be opened.";
-}
-window.addEventListener("online",updateNetwork);
-window.addEventListener("offline",updateNetwork);
-
-function openGrade(g){
- grade=g;
- $("subjectHeading").textContent=g+" Subjects";
- $("subjectGrid").innerHTML=Object.keys(courses[g]).map(s=>`
- <div class="card">
-  <h3>${s}</h3>
-  <p>${courses[g][s].length} chapters listed</p>
-  <button onclick="openSubject('${s}')">Open Subject</button>
- </div>`).join("");
- show("subjects");
-}
-function openSubject(s){
- subject=s;
- $("chapterHeading").textContent=grade+" • "+subject;
- $("chapterSearch").value="";
- renderChapters(courses[grade][subject]);
- show("chapters");
-}
-function renderChapters(list){
- $("chapterList").innerHTML=list.map((c,i)=>`
- <div class="item">
-  <div class="tag">CHAPTER ${i+1}</div>
-  <h3>${c}</h3>
-  <p>Chapter overview, learning goals and study notes.</p>
-  <button onclick="openLessonByName('${c.replace(/'/g,"\\'")}')">Open Chapter</button>
- </div>`).join("");
-}
-function filterChapters(){
- const q=$("chapterSearch").value.toLowerCase();
- renderChapters(courses[grade][subject].filter(c=>c.toLowerCase().includes(q)));
-}
-function openLessonByName(name){
- const index=courses[grade][subject].indexOf(name);
- if(index>=0)openLesson(index);
+function renderEnglish(){
+document.getElementById('englishGrid').innerHTML=english.map((x,i)=>`
+<article class="card">
+<div class="kicker">Level ${i+1}</div>
+<h3>${x[0]}</h3>
+<p class="muted">${x[1]}</p>
+<button class="btn secondary" onclick="englishLesson(${i})">Open level</button>
+</article>`).join('');
 }
 
-function makeLesson(g,s,c){
- const intro=s==="Physics"?
- "Physics explains how the natural world behaves through matter, energy, motion and forces.":
- s==="Chemistry"?
- "Chemistry studies matter, its composition, structure, properties and the changes it undergoes.":
- "Biology is the scientific study of living organisms and their structure, functions and relationships.";
- const key=s==="Physics"?
- "Identify the physical quantities involved, their units and the scientific laws used to explain the chapter.":
- s==="Chemistry"?
- "Identify the important terms, particles, properties and chemical processes connected with this chapter.":
- "Identify the important biological structures, processes, functions and examples connected with this chapter.";
- return {
-  id:g+"|"+s+"|"+c,grade:g,subject:s,chapter:c,title:c,
-  body:`
-   <h3>1. Introduction</h3>
-   <p>${intro}</p>
-   <p>This StudySphere lesson introduces the chapter <b>${c}</b>.</p>
-   <h3>2. What you should learn</h3>
-   <ul>
-    <li>Understand the meaning and purpose of ${c}.</li>
-    <li>Learn the important scientific vocabulary.</li>
-    <li>Connect the topic with real-life examples.</li>
-    <li>Explain the main ideas in your own words.</li>
-   </ul>
-   <h3>3. Key learning point</h3>
-   <p>${key}</p>
-   <h3>4. Study method</h3>
-   <ol>
-    <li>Read the chapter from your prescribed textbook.</li>
-    <li>Write down unfamiliar terms and their meanings.</li>
-    <li>Make short notes in your own words.</li>
-    <li>Practice diagrams, formulas or reactions where relevant.</li>
-    <li>Revise the topic and test your understanding.</li>
-   </ol>
-   <h3>5. Check your understanding</h3>
-   <p><b>Question:</b> What is the main idea of ${c}?</p>
-   <p><b>Practice:</b> Write five important points from this chapter.</p>
-   <h3>6. Important note</h3>
-   <p>This is an original introductory study guide, not a reproduction of the complete textbook chapter. Detailed explanations, solved examples, exercises and chapter tests will be added to the course content.</p>
-  `
- };
+function englishLesson(i){
+const x=english[i];
+document.getElementById('readerTitle').textContent=`English • ${x[0]}`;
+document.getElementById('lessonBody').innerHTML=`
+<div><span class="chip">English Academy</span><span class="chip">${x[0]}</span></div>
+<h2>${x[0]} English</h2>
+<p>${x[1]}</p>
+<h3>Practice</h3>
+<p>Write five sentences about your day. Read them aloud slowly. Learn five new words and use each word in a sentence.</p>
+<div class="notice">English Academy lesson outline. More lessons and exercises can be added level by level.</div>`;
+showView('reader');
 }
 
-const dbReady=new Promise((resolve,reject)=>{
- const request=indexedDB.open("StudySphereLibrary",1);
- request.onupgradeneeded=()=>{
-  const db=request.result;
-  if(!db.objectStoreNames.contains("lessons"))
-   db.createObjectStore("lessons",{keyPath:"id"});
- };
- request.onsuccess=()=>resolve(request.result);
- request.onerror=()=>reject(request.error);
-});
-
-async function getAllSaved(){
- const db=await dbReady;
- return new Promise((resolve,reject)=>{
-  const tx=db.transaction("lessons","readonly");
-  const req=tx.objectStore("lessons").getAll();
-  req.onsuccess=()=>resolve(req.result);
-  req.onerror=()=>reject(req.error);
- });
-}
-async function storeLesson(item){
- const db=await dbReady;
- return new Promise((resolve,reject)=>{
-  const tx=db.transaction("lessons","readwrite");
-  tx.objectStore("lessons").put(item);
-  tx.oncomplete=()=>resolve(true);
-  tx.onerror=()=>reject(tx.error);
- });
-}
-async function openLesson(index){
- chapter=courses[grade][subject][index];
- const id=grade+"|"+subject+"|"+chapter;
- const saved=(await getAllSaved()).find(x=>x.id===id);
- if(!navigator.onLine&&!saved){
-  alert("This chapter is not saved on your phone yet. Connect to the internet to open it.");
-  return;
- }
- currentLesson=saved||makeLesson(grade,subject,chapter);
- showLesson();
- if(navigator.onLine&&!saved)await saveCurrent();
-}
-function showLesson(){
- $("lessonTag").textContent=currentLesson.grade+" • "+currentLesson.subject;
- $("lessonTitle").textContent=currentLesson.title;
- $("lessonBody").innerHTML=currentLesson.body;
- $("lessonStatus").textContent=currentLesson.savedAt?
- "✓ Saved on this device for offline study.":
- "Connect to the internet to save this lesson.";
- show("reader");
-}
-async function saveCurrent(){
- if(!currentLesson)return;
- currentLesson.savedAt=Date.now();
- await storeLesson(currentLesson);
- $("lessonStatus").textContent="✓ Saved for offline study on this phone.";
- updateProgress();
-}
-async function savedPage(){
- show("saved");
- const list=await getAllSaved();
- $("savedList").innerHTML=list.length?list.map((x,i)=>`
- <div class="item">
-  <h3>${x.title}</h3>
-  <p>${x.grade} • ${x.subject}</p>
-  <button onclick="openSaved(${i})">Open Offline</button>
- </div>`).join(""):"<p class='muted'>No saved lessons yet. Open a chapter while online.</p>";
- window.savedCache=list;
-}
-window.savedCache=[];
-function openSaved(i){
- currentLesson=window.savedCache[i];
- showLesson();
-}
-async function updateProgress(){
- try{
-  const count=(await getAllSaved()).length;
-  $("progressCount").textContent=count+" lessons saved";
-  $("progressBar").style.width=Math.min(100,count/40*100)+"%";
- }catch(e){}
-}
-
-function englishPage(){
- show("english");
- $("englishList").innerHTML=englishLevels.map((x,i)=>`
- <div class="item">
-  <div class="tag">LEVEL ${i+1}</div>
-  <h3>${x[0]}</h3>
-  <p>${x[1]}</p>
-  <button onclick="openEnglish(${i})">Open Level</button>
- </div>`).join("");
-}
-function openEnglish(i){
- grade="English Academy";
- subject="English";
- chapter=englishLevels[i][0];
- currentLesson={
-  id:"English|"+chapter,grade:"English Academy",subject:"English",
-  title:chapter,
-  body:`
-   <h3>Welcome to ${chapter}</h3>
-   <p>${englishLevels[i][1]}</p>
-   <h3>Your learning routine</h3>
-   <ol>
-    <li>Learn five new English words.</li>
-    <li>Study one grammar concept.</li>
-    <li>Read a short English passage.</li>
-    <li>Write five original sentences.</li>
-    <li>Practice speaking aloud.</li>
-   </ol>
-   <h3>Practice</h3>
-   <p>Introduce yourself in five simple English sentences.</p>
-   <p>Write down five words you learned today and use each in a sentence.</p>
-   <p><b>Remember:</b> Regular practice is more important than rushing through levels.</p>
-   <p>This is a starter lesson. Full exercises, explanations and level tests will be added in the content-building stage.</p>
-  `
- };
- showLesson();
- if(navigator.onLine)saveCurrent();
-}
-
-
-// ---------------- PREMIUM MEMBERSHIP ----------------
-const ADMIN_USER_ID = "fd357f56-570c-40a7-9b86-5c2a50a936cd";
-let isStudySphereAdmin = false;
-
-function safeText(value){
- return String(value ?? "").replace(/[&<>"']/g,ch=>({
-  "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
- }[ch]));
-}
-function statusClass(status){
- if(status==="active"||status==="approved")return "status-pill status-active";
- if(status==="pending")return "status-pill status-pending";
- if(status==="rejected")return "status-pill status-rejected";
- return "status-pill";
-}
-async function initPremium(){
- if(!currentSession)return;
- isStudySphereAdmin = currentSession.user.id===ADMIN_USER_ID;
- $("adminNav").classList.toggle("hidden",!isStudySphereAdmin);
- await refreshSubscriptionStatus();
-}
-async function refreshSubscriptionStatus(){
- const box=$("subscriptionStatus");
- if(!currentSession){box.textContent="Please log in.";return;}
- const {data,error}=await supabaseClient
-  .from("subscriptions")
-  .select("starts_at,ends_at,status")
-  .eq("user_id",currentSession.user.id)
-  .eq("status","active")
-  .order("ends_at",{ascending:false})
-  .limit(1);
- if(error){box.textContent="Membership status could not be loaded: "+error.message;return;}
- const active=(data||[]).find(x=>new Date(x.ends_at).getTime()>Date.now());
- if(active){
-  box.innerHTML='<span class="status-pill status-active">PREMIUM ACTIVE</span><p>Valid until: <b>'+safeText(new Date(active.ends_at).toLocaleString())+'</b></p>';
- }else{
-  box.innerHTML='<span class="status-pill">FREE PLAN</span><p class="muted">No active Premium subscription found.</p>';
- }
-}
-function premiumPage(){
- show("premium");
- loadMyPaymentRequests().catch(e=>$("myPaymentRequests").textContent=e.message);
- refreshSubscriptionStatus();
-}
-async function loadMyPaymentRequests(){
- const box=$("myPaymentRequests");
- const {data,error}=await supabaseClient
-  .from("payment_requests")
-  .select("id,amount,method,transaction_reference,status,created_at,reviewed_at")
-  .eq("user_id",currentSession.user.id)
-  .order("created_at",{ascending:false});
- if(error)throw error;
- if(!data||!data.length){box.innerHTML='<p class="muted">No payment requests yet.</p>';return;}
- box.innerHTML=data.map(r=>`
-  <div class="item">
-   <strong>Rs. ${safeText(r.amount)}</strong>
-   <span class="${statusClass(r.status)}">${safeText(String(r.status).toUpperCase())}</span>
-   <p>${safeText(r.method)} • Ref: ${safeText(r.transaction_reference)}</p>
-   <p class="muted">${safeText(new Date(r.created_at).toLocaleString())}</p>
-  </div>`).join("");
-}
-$("paymentForm").addEventListener("submit",async event=>{
- event.preventDefault();
- if(!currentSession){$("paymentMessage").textContent="Please log in first.";return;}
- const method=$("paymentMethod").value;
- const reference=$("transactionReference").value.trim();
- const file=$("paymentReceipt").files[0];
- const button=$("paymentSubmit");
- const message=$("paymentMessage");
- if(!method||!reference||!file){message.textContent="Complete all fields.";return;}
- const allowed=["image/jpeg","image/png","image/webp"];
- if(!allowed.includes(file.type)){message.textContent="Choose a JPG, PNG or WEBP image.";return;}
- if(file.size>5*1024*1024){message.textContent="Receipt must be 5 MB or smaller.";return;}
- button.disabled=true;
- message.textContent="Uploading receipt and submitting request...";
- try{
-  const userId=currentSession.user.id;
-  const ext=file.type==="image/png"?"png":file.type==="image/webp"?"webp":"jpg";
-  const filePath=userId+"/"+Date.now()+"-"+crypto.randomUUID()+"."+ext;
-  const {error:uploadError}=await supabaseClient.storage
-   .from("payment-receipts")
-   .upload(filePath,file,{contentType:file.type,upsert:false});
-  if(uploadError)throw uploadError;
-  const {error:insertError}=await supabaseClient
-   .from("payment_requests")
-   .insert({
-    user_id:userId,
-    amount:200,
-    method:method,
-    transaction_reference:reference,
-    receipt_path:filePath,
-    status:"pending"
-   });
-  if(insertError){
-   await supabaseClient.storage.from("payment-receipts").remove([filePath]);
-   throw insertError;
-  }
-  message.textContent="Request submitted. Admin will check the transaction before activation.";
-  $("paymentForm").reset();
-  await loadMyPaymentRequests();
- }catch(error){
-  message.textContent="Could not submit request: "+error.message;
- }finally{
-  button.disabled=false;
- }
-});
-async function adminPage(){
- if(!isStudySphereAdmin||currentSession.user.id!==ADMIN_USER_ID){
-  alert("Admin access required.");
-  return;
- }
- show("admin");
- await loadAdminRequests();
-}
-async function loadAdminRequests(){
- const box=$("adminRequests");
- box.innerHTML='<p class="muted">Loading requests...</p>';
- const {data,error}=await supabaseClient
-  .from("payment_requests")
-  .select("id,user_id,amount,method,transaction_reference,receipt_path,status,created_at")
-  .order("created_at",{ascending:false});
- if(error){box.textContent="Could not load requests: "+error.message;return;}
- if(!data||!data.length){box.innerHTML='<p class="muted">No payment requests found.</p>';return;}
- const rows=await Promise.all(data.map(async r=>{
-  let receiptUrl="";
-  if(r.receipt_path){
-   const {data:urlData,error:urlError}=await supabaseClient.storage
-    .from("payment-receipts").createSignedUrl(r.receipt_path,60);
-   if(!urlError)receiptUrl=urlData.signedUrl;
-  }
-  return {r,receiptUrl};
- }));
- box.innerHTML=rows.map(({r,receiptUrl})=>`
-  <div class="item">
-   <span class="${statusClass(r.status)}">${safeText(String(r.status).toUpperCase())}</span>
-   <h3>Rs. ${safeText(r.amount)} • ${safeText(r.method)}</h3>
-   <p>Student ID: ${safeText(r.user_id)}</p>
-   <p>Transaction reference: <b>${safeText(r.transaction_reference)}</b></p>
-   <p class="muted">Submitted: ${safeText(new Date(r.created_at).toLocaleString())}</p>
-   ${receiptUrl?`<p><a class="receipt-link" href="${safeText(receiptUrl)}" target="_blank" rel="noopener">View receipt (temporary link)</a></p>`:'<p class="muted">Receipt link unavailable.</p>'}
-   ${r.status==="pending"?`
-    <div class="actions">
-     <button onclick="decidePayment('${safeText(r.id)}',true)">Approve + 30 days</button>
-     <button class="secondary" onclick="decidePayment('${safeText(r.id)}',false)">Reject</button>
-    </div>`:""}
-  </div>`).join("");
-}
-async function decidePayment(requestId,approve){
- if(!isStudySphereAdmin||currentSession.user.id!==ADMIN_USER_ID){
-  alert("Admin access required.");return;
- }
- const action=approve?"approve":"reject";
- if(!confirm("Confirm "+action+"? Only approve after checking the real transaction in the authorized payment account."))return;
- try{
-  const {data:request,error:requestError}=await supabaseClient
-   .from("payment_requests")
-   .select("id,user_id,status")
-   .eq("id",requestId)
-   .single();
-  if(requestError)throw requestError;
-  if(request.status!=="pending")throw new Error("This request has already been reviewed.");
-  if(approve){
-   const {data:existing,error:findError}=await supabaseClient
-    .from("subscriptions")
-    .select("id,ends_at,status")
-    .eq("user_id",request.user_id)
-    .eq("status","active")
-    .order("ends_at",{ascending:false})
-    .limit(1);
-   if(findError)throw findError;
-   const now=new Date();
-   const current=(existing||[]).find(x=>new Date(x.ends_at).getTime()>now.getTime());
-   const start=current?new Date(current.ends_at):now;
-   const end=new Date(start.getTime()+30*24*60*60*1000);
-   if(current){
-    const {error:updateSubError}=await supabaseClient
-     .from("subscriptions")
-     .update({starts_at:now.toISOString(),ends_at:end.toISOString(),status:"active"})
-     .eq("id",current.id);
-    if(updateSubError)throw updateSubError;
-   }else{
-    const {error:insertSubError}=await supabaseClient
-     .from("subscriptions")
-     .insert({user_id:request.user_id,starts_at:now.toISOString(),ends_at:end.toISOString(),status:"active"});
-    if(insertSubError)throw insertSubError;
-   }
-  }
-  const {error:updateRequestError}=await supabaseClient
-   .from("payment_requests")
-   .update({
-    status:approve?"approved":"rejected",
-    reviewed_at:new Date().toISOString(),
-    reviewed_by:currentSession.user.id
-   })
-   .eq("id",requestId)
-   .eq("status","pending");
-  if(updateRequestError)throw updateRequestError;
-  alert(approve?"Payment approved. Premium subscription updated.":"Payment request rejected.");
-  await loadAdminRequests();
- }catch(error){
-  alert("Action failed: "+error.message);
- }
-}
-
-
-if("serviceWorker" in navigator){
- window.addEventListener("load",()=>{
-  navigator.serviceWorker.register("./sw.js").catch(err=>console.log(err));
- });
-}
+renderSubjects();
+renderEnglish();
+updateSavedCount();
 </script>
 </body>
 </html>
+                                                                                                  
